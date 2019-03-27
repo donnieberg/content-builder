@@ -1,12 +1,11 @@
-import React from 'react'
-import { render } from 'react-dom'
-import { createStore } from 'redux'
-import { Provider } from 'react-redux'
-import App from './components/App'
-import rootReducer from './reducers'
+import React from 'react';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import store from './redux/store';
+  
+import App from './App';
+import rootReducer from './redux/reducers';
 import { IconSettings } from '@salesforce/design-system-react';
-
-const store = createStore(rootReducer)
 
 render(
   <Provider store={store}>
