@@ -3,6 +3,7 @@ import { Tabs as TabsWrapper, TabsPanel } from '@salesforce/design-system-react'
 
 class Tabs extends Component {
   render() {
+    console.log(this.props)
     return (
       <TabsWrapper>
         <TabsPanel label="Item One">Item One Content</TabsPanel>

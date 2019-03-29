@@ -1,9 +1,12 @@
 const initialState = {
-  test: "test"
+  test: "test",
 };
 
 const rootReducer = (state = initialState, action) => {
-  return state;
+  switch (action.type) {
+    default:
+      return state;
+  }
 };
 
 export default rootReducer;
