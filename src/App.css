@@ -4,7 +4,15 @@
  *  ============================================================================= 
 */
 
+.app-grid { grid-template-rows: auto 1fr; }
 
+.main-grid {
+  grid-template-columns: 20% auto 25%;
+}
+
+.main-grid div {
+  border: 1px solid black;
+}
 
 
 
@@ -51,6 +59,9 @@ textarea { border: none; }
 .dib { display: inline-block; }
 .dt { display: table; }
 .dtc { display: table-cell; }
+
+.dg { display: grid; }
+.dg-stretch { align-content: stretch; }
 
 .df { display: flex; }
 .df-col { flex-direction: column; }

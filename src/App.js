@@ -1,25 +1,24 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-import { 
-  Button, 
+import {
+  Button,
   ButtonGroup,
   Dropdown,
   DropdownTrigger,
-  Icon, 
+  Icon,
 } from '@salesforce/design-system-react';
 
 class App extends Component {
-	constructor(props) {
-		super(props);
+  constructor(props) {
+    super(props);
     this.state = {};
-	}
+  }
 
   renderHeaderActions() {
     return (
       <ButtonGroup>
-        <Button 
+        <Button
           assistiveText={{ icon: 'Undo' }}
           iconCategory="utility"
           iconName="undo"
@@ -28,7 +27,7 @@ class App extends Component {
           onClick={() => { console.log('Undo Clicked'); }}
           variant="icon"
         />
-        <Button 
+        <Button
           assistiveText={{ icon: 'Redo' }}
           iconCategory="utility"
           iconName="redo"
@@ -37,7 +36,7 @@ class App extends Component {
           onClick={() => { console.log('redo Clicked'); }}
           variant="icon"
         />
-        <Button 
+        <Button
           assistiveText={{ icon: 'Cut' }}
           iconCategory="utility"
           iconName="cut"
@@ -46,7 +45,7 @@ class App extends Component {
           onClick={() => { console.log('cut Clicked'); }}
           variant="icon"
         />
-        <Button 
+        <Button
           assistiveText={{ icon: 'Copy' }}
           iconCategory="utility"
           iconName="copy"
@@ -56,7 +55,7 @@ class App extends Component {
           variant="icon"
         />
       </ButtonGroup>
-      )
+    )
   }
 
   renderHeaderViews() {
@@ -65,39 +64,39 @@ class App extends Component {
      * cuz theyre just placeholders */
     return (
       <div className="mlx dib">
-				<Dropdown
-					align="right"
-					options={[
-						{ label: 'Desktop', value: 'A0' },
-						{ label: 'Mobile', value: 'B0' }
-					]}
-				>
-					<DropdownTrigger>
-						<Button
+        <Dropdown
+          align="right"
+          options={[
+            { label: 'Desktop', value: 'A0' },
+            { label: 'Mobile', value: 'B0' }
+          ]}
+        >
+          <DropdownTrigger>
+            <Button
               className="mrs"
-							iconCategory="utility"
-							iconName="down"
-							iconPosition="right"
-							label="Desktop"
-						/>
-					</DropdownTrigger>
-				</Dropdown>
-				<Dropdown
-					align="right"
-					options={[
-						{ label: 'Scale to Fit', value: 'A0' },
-						{ label: 'Full size', value: 'B0' }
-					]}
-				>
-					<DropdownTrigger>
-						<Button
+              iconCategory="utility"
+              iconName="down"
+              iconPosition="right"
+              label="Desktop"
+            />
+          </DropdownTrigger>
+        </Dropdown>
+        <Dropdown
+          align="right"
+          options={[
+            { label: 'Scale to Fit', value: 'A0' },
+            { label: 'Full size', value: 'B0' }
+          ]}
+        >
+          <DropdownTrigger>
+            <Button
               className="mhs"
-							iconCategory="utility"
-							iconName="down"
-							iconPosition="right"
-							label="Scale to Fit"
-						/>
-					</DropdownTrigger>
+              iconCategory="utility"
+              iconName="down"
+              iconPosition="right"
+              label="Scale to Fit"
+            />
+          </DropdownTrigger>
         </Dropdown>
         <Button
           className="mhs"
@@ -121,7 +120,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="App ht-full dg app-grid">
         <header>
           <section className="df df-justify bg-navy">
             <div>
@@ -158,7 +157,10 @@ class App extends Component {
           </section>
         </header>
 
-        <main className="df df-col">
+        <main className="dg main-grid">
+          <div>container 1</div>
+          <div>container 2</div>
+          <div>container 3</div>
         </main>
       </div>
     );
