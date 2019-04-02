@@ -49,15 +49,15 @@ const componentData = [
 
 class ConnectedApp extends Component {
   render() {
-    const Component = componentData[0].component;
+    // const Component = componentData[0].component;
     return (
       <div className="App">
         {/* hi */}
         {/* {this.props.test} */}
-
+        {/* 
         {
           <Component {...componentData[0].children} />
-        }
+        } */}
         {/* <Accordion data={componentData[1]} />
         <Tabs data={componentData[0]} /> */}
       </div>
