@@ -9,6 +9,33 @@ import {
   Icon,
 } from '@salesforce/design-system-react';
 
+const addComponentOptions = [
+  {
+    label: 'Tabs',
+    value: 'tabs',
+    rightIcon: {
+      category: 'utility',
+      name: 'tabset'
+    }
+  },
+  {
+    label: 'Accordion',
+    value: 'accordion',
+    rightIcon: {
+      category: 'utility',
+      name: 'layers'
+    }
+  },
+  {
+    label: 'Chatter',
+    value: 'Chatter',
+    rightIcon: {
+      category: 'utility',
+      name: 'chat'
+    }
+  },
+];
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -161,10 +188,59 @@ class App extends Component {
           <div id="components-sidebar" className="pam bg-white bas border-gray">
             <h2 className="slds-text-heading_small">Lightning Components</h2>
           </div>
-          <div id="main-builder" className="mas mbn pam pbn bg-blue dg builder-grid dg-stretch">
-            <div id="builder-header" className="builder-region">Header</div>
-            <div id="builder-main-col" className="builder-region">Main Column</div>
-            <div id="builder-small-col" className="builder-region">Side Column</div>
+          <div id="main-builder" className="maxs mbn pam pbn bg-blue dg builder-grid dg-stretch">
+            {/* <h2 className="slds-assistive-text"></h2> */}
+            <region
+              id="builder-header"
+              className="builder-region slds-text-align_center"
+              aria-label="Header Region"
+            >
+              <div className="mal">
+                <Dropdown
+                  align="left"
+                  className="wi-full"
+                  options={addComponentOptions}
+                >
+                  <DropdownTrigger>
+                    <Button label="Add a Component: Header Region" />
+                  </DropdownTrigger>
+                </Dropdown>
+              </div>
+            </region>
+            <region
+              id="builder-main-col"
+              className="builder-region slds-text-align_center"
+              aria-label="Main Region"
+            >
+              <div className="mal">
+                <Dropdown
+                  align="left"
+                  className="wi-full"
+                  options={addComponentOptions}
+                >
+                  <DropdownTrigger>
+                    <Button label="Add a Component: Main Region" />
+                  </DropdownTrigger>
+                </Dropdown>
+              </div>
+            </region>
+            <region
+              id="builder-small-col"
+              className="builder-region slds-text-align_center"
+              aria-label="Right Sidebar Region"
+            >
+              <div className="mal">
+                <Dropdown
+                  align="left"
+                  className="wi-full"
+                  options={addComponentOptions}
+                >
+                  <DropdownTrigger>
+                    <Button label="Add a Component: Right Sidebar" />
+                  </DropdownTrigger>
+                </Dropdown>
+              </div>
+            </region>
           </div>
           <div id="properties-sidebar" className="pam bg-white bas border-gray">
             <h2 className="slds-text-heading_small">Properties</h2>

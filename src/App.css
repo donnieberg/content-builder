@@ -21,9 +21,7 @@
     "builder-main-col builder-main-col builder-small-col";
 }
 
-.builder-region {
-  border: 1px dashed black;
-}
+.builder-region { border: 1px dashed black; }
 
 /*  
  *  ============================================================================= 
