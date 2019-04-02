@@ -120,8 +120,8 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App ht-full dg app-grid">
-        <header>
+      <div className="App ht-full dg app-grid bg-gray">
+        <header id="header-section">
           <section className="df df-justify bg-navy">
             <div>
               <span className="pam dib brs border-white text-white">
@@ -146,7 +146,7 @@ class App extends Component {
             </div>
           </section>
 
-          <section className="df df-justify bg-white bbs border-gray">
+          <section className="df df-justify bg-white">
             <div className="pam">
               {this.renderHeaderActions()}
               {this.renderHeaderViews()}
@@ -157,10 +157,18 @@ class App extends Component {
           </section>
         </header>
 
-        <main className="dg main-grid">
-          <div>container 1</div>
-          <div>container 2</div>
-          <div>container 3</div>
+        <main className="dg main-grid dg-stretch">
+          <div id="components-sidebar" className="pam bg-white bas border-gray">
+            <h2 className="slds-text-heading_small">Lightning Components</h2>
+          </div>
+          <div id="main-builder" className="mas mbn pam pbn bg-blue dg builder-grid dg-stretch">
+            <div id="builder-header" className="builder-region">Header</div>
+            <div id="builder-main-col" className="builder-region">Main Column</div>
+            <div id="builder-small-col" className="builder-region">Side Column</div>
+          </div>
+          <div id="properties-sidebar" className="pam bg-white bas border-gray">
+            <h2 className="slds-text-heading_small">Properties</h2>
+          </div>
         </main>
       </div>
     );

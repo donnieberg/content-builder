@@ -4,19 +4,26 @@
  *  ============================================================================= 
 */
 
-.app-grid { grid-template-rows: auto 1fr; }
+#builder-header { grid-area: builder-header; }
+#builder-main-col { grid-area: builder-main-col; }
+#builder-small-col { grid-area: builder-small-col; }
 
-.main-grid {
-  grid-template-columns: 20% auto 25%;
+.app-grid { grid-template-rows: auto 1fr;  }
+.main-grid { grid-template-columns: 20% auto 25%; }
+
+.builder-grid {
+  grid-column-gap: 0.5rem;
+  grid-row-gap: 0.5rem;
+  grid-template-columns: 33% 33% 33%;
+  grid-template-rows: auto 1fr;
+  grid-template-areas: 
+    "builder-header builder-header builder-header"
+    "builder-main-col builder-main-col builder-small-col";
 }
 
-.main-grid div {
-  border: 1px solid black;
+.builder-region {
+  border: 1px dashed black;
 }
-
-
-
-
 
 /*  
  *  ============================================================================= 
@@ -111,7 +118,9 @@ textarea { border: none; }
  * COLORS
  */
 .bg-navy { background-color: #001f3f; }
+.bg-gray { background-color: #dddbda; }
 .bg-white { background-color: #fff; }
+.bg-blue { background-color: #b0c4df; }
 .text-white, .text-white a {
 	color: #ffffff;
 }
