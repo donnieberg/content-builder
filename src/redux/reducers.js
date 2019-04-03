@@ -1,8 +1,11 @@
 import {
-  HEADER, COMPONENT_PANEL, CANVAS, PROPERTY_PANEL,
-  ADD_COMPONENT,
+  HEADER, COMPONENT_PANEL, CANVAS, PROPERTY_PANEL
 } from './constants';
-// import { Accordion } from '@salesforce/design-system-react';
+
+import {
+  ADD_COMPONENT
+} from './actionTypes';
+
 import Accordion from '../components/Accordion';
 
 const initialState = {
@@ -45,10 +48,7 @@ const rootReducer = (state = initialState, action) => {
     case ADD_COMPONENT:
       return {
         ...state,
-        canvas: {
-          ...state.canvas,
-          [action.canvasRegion]: [action.componentData]
-        }
+        canvas: action.newCanvas
       }
     default:
       return state;
