@@ -4,29 +4,30 @@ import {
   AccordionPanel
 } from '@salesforce/design-system-react';
 
+// const accordionItems = [
+//   {
+//     id: '1',
+//     summary: 'Accordion Summary',
+//     details: 'Accordion details - A',
+//   },
+//   {
+//     id: '2',
+//     summary: 'Accordion Summary',
+//     details: 'Accordion details - B',
+//   },
+//   {
+//     id: '3',
+//     summary: 'Accordion Summary',
+//     details: 'Accordion details - C',
+//   },
+// ];
+
 class Accordion extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       expandedPanels: {},
-      items: [
-        {
-          id: '1',
-          summary: 'Accordion Summary',
-          details: 'Accordion details - A',
-        },
-        {
-          id: '2',
-          summary: 'Accordion Summary',
-          details: 'Accordion details - B',
-        },
-        {
-          id: '3',
-          summary: 'Accordion Summary',
-          details: 'Accordion details - C',
-        },
-      ],
     };
   }
 
@@ -38,26 +39,20 @@ class Accordion extends Component {
         [data.id]: !state.expandedPanels[data.id],
       },
     }));
-    if (this.props.action) {
-      const dataAsArray = Object.keys(data).map((id) => data[id]);
-      this.props.action('onClick')(event, ...dataAsArray);
-    } else if (console) {
-      console.log('[onSelect] (event, data)', event, data);
-    }
   }
 
   render() {
     return (
       <AccordionWrapper id="base-example-accordion" className="white-bkgd">
-        {this.state.items.map((item, i) => (
+        {this.props.children.map((item, i) => (
           <AccordionPanel
             expanded={!!this.state.expandedPanels[item.id]}
             id={item.id}
             key={item.id}
             onTogglePanel={(event) => this.togglePanel(event, item)}
-            summary={item.summary}
+            summary={item.label}
           >
-            {item.details}
+            {item.content}
           </AccordionPanel>
         ))}
       </AccordionWrapper>
