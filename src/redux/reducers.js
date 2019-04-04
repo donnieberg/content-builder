@@ -48,7 +48,10 @@ const rootReducer = (state = initialState, action) => {
     case ADD_COMPONENT:
       return {
         ...state,
-        canvas: action.newCanvas
+        canvas: {
+          ...state.canvas,
+          [action.region]: action.newRegionData
+        }
       }
     default:
       return state;

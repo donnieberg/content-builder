@@ -43,10 +43,14 @@ class Canvas extends Component {
   renderComponents() {
     return (
       this.props.data.header.components.map((componentData, i) => {
-        let ReactComponent = componentData.component;
-        return (
-          <ReactComponent children={componentData.children} key={i} />
-        )
+        if(typeof(componentData.component) === 'string') {
+          return <div key={`static-${i}`}>{componentData.component}</div>
+          } else {
+            let ReactComponent = componentData.component;
+            return (
+              <ReactComponent children={componentData.children} key={`component-{i}`} />
+              )
+          }
       })
     )
   }

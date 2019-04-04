@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { addComponent } from './redux/actions';
+import { ALL_COMPONENTS } from './redux/constants';
 
 // import classnames from 'classnames';
 // import {
@@ -72,41 +73,29 @@ class ConnectedApp extends Component {
     this.state = {};
   }
 
-  addComponent = (region) => {
-    return () => {
-      const accData = {
-        component: Accordion,
-        children: [
-          {
-            panelIndex: 0,
-            content: 'Panel 1',
-            label: 'Label 1',
-          }, {
-            panelIndex: 1,
-            content: 'Panel 2',
-            label: 'Label 2',
-          }, {
-            panelIndex: 2,
-            content: 'Panel 3',
-            label: 'Label 3',
-          }
-        ]
-      };
-
-      let stateCopy = Object.assign({}, this.props.canvas);
-      let test = stateCopy[region].components.push(accData);
-      this.props.addComponent(stateCopy);
+  addComponent = (region, component) => {
+    return (e) => {
+      const targetId = e.target.id;
+      const componentToAdd = ALL_COMPONENTS.find(x => x.id === targetId);
+      let stateCopy = Object.assign({}, this.props.canvas[region]);
+      stateCopy.components.push(componentToAdd);
+      this.props.addComponent(region, stateCopy);
     }
   }
 
   render() {
+    //console.log('state', this.props.canvas);
     return (
       <div className="App ht-full dg app-grid bg-gray">
         <Header />
         <main className="dg main-grid dg-stretch">
           <div id="components-sidebar" className="pam bg-white bas border-gray">
             <h2 className="slds-text-heading_small">Lightning Components</h2>
-            <button onClick={this.addComponent('header')}>Add to header</button>
+            <button 
+              id="chatter"
+              onClick={this.addComponent('header')}>
+              Add to header
+            </button>
           </div>
           <Canvas data={this.props.canvas} />
           <div id="properties-sidebar" className="pam bg-white bas border-gray">
@@ -121,3 +110,4 @@ class ConnectedApp extends Component {
 // connects react component to the redux store
 const App = connect(mapStateToProps, mapDispatchToProps)(ConnectedApp);
 export default App;
+

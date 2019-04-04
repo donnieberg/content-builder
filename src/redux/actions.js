@@ -2,7 +2,8 @@ import {
   ADD_COMPONENT
 } from './actionTypes';
 
-export const addComponent = (newCanvas) => ({
+export const addComponent = (region, newRegionData) => ({
   type: ADD_COMPONENT,
-  newCanvas: newCanvas,
+  region: region,
+  newRegionData: newRegionData,
 });
