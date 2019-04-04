@@ -1,13 +1,37 @@
 import React, { Component } from 'react';
 import { Tabs as TabsWrapper, TabsPanel } from '@salesforce/design-system-react'
 
+const tabsContent = [
+  {
+    id: '1',
+    content: 'Item One Content',
+    label: 'Item One',
+  }, {
+    id: '2',
+    content: 'Item Two Content',
+    label: 'Item Two',
+  }, {
+    id: '3',
+    content: 'Item Three Content',
+    label: 'Item Three',
+  }
+];
+
 class Tabs extends Component {
   render() {
     return (
       <TabsWrapper>
-        <TabsPanel label="Item One">Item One Content</TabsPanel>
-        <TabsPanel label="Item Two">Item Two Content</TabsPanel>
-        <TabsPanel label="Item Three">Item Three Content</TabsPanel>
+        {
+          tabsContent.map((item, i) => (
+            <TabsPanel
+              id={item.id}
+              key={item.id}
+              label={item.label}
+            >
+              {item.content}
+            </TabsPanel>
+          ))
+        }
       </TabsWrapper>
     );
   }
