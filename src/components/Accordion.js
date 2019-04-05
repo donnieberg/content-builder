@@ -4,24 +4,6 @@ import {
   AccordionPanel
 } from '@salesforce/design-system-react';
 
-// const accordionItems = [
-//   {
-//     id: '1',
-//     summary: 'Accordion Summary',
-//     details: 'Accordion details - A',
-//   },
-//   {
-//     id: '2',
-//     summary: 'Accordion Summary',
-//     details: 'Accordion details - B',
-//   },
-//   {
-//     id: '3',
-//     summary: 'Accordion Summary',
-//     details: 'Accordion details - C',
-//   },
-// ];
-
 class Accordion extends Component {
   constructor(props) {
     super(props);
@@ -31,6 +13,7 @@ class Accordion extends Component {
     };
   }
 
+  // toggle panel doesnt work lol
   togglePanel(event, data) {
     this.setState((state) => ({
       ...state,
@@ -43,7 +26,7 @@ class Accordion extends Component {
 
   render() {
     return (
-      <AccordionWrapper id="base-example-accordion" className="white-bkgd">
+      <AccordionWrapper id="base-example-accordion" className={`white-bkgd ${this.props.className}`}>
         {this.props.children.map((item, i) => (
           <AccordionPanel
             expanded={!!this.state.expandedPanels[item.id]}

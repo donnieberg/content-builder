@@ -5,8 +5,8 @@
 */
 
 #builder-header { grid-area: builder-header; }
-#builder-main-col { grid-area: builder-main-col; }
-#builder-small-col { grid-area: builder-small-col; }
+#builder-main { grid-area: builder-main; }
+#builder-sidebar { grid-area: builder-sidebar; }
 
 .app-grid { grid-template-rows: auto 1fr;  }
 .main-grid { grid-template-columns: 20% auto 25%; }
@@ -18,7 +18,7 @@
   grid-template-rows: auto 1fr;
   grid-template-areas: 
     "builder-header builder-header builder-header"
-    "builder-main-col builder-main-col builder-small-col";
+    "builder-main builder-main builder-sidebar";
 }
 
 .builder-region { border: 1px dashed black; }

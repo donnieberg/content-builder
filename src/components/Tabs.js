@@ -20,7 +20,7 @@ const tabsContent = [
 class Tabs extends Component {
   render() {
     return (
-      <TabsWrapper>
+      <TabsWrapper className={this.props.className}>
         {
           tabsContent.map((item, i) => (
             <TabsPanel
