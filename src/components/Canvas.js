@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import {
   Button,
-  // ButtonGroup,
   Dropdown,
   DropdownTrigger,
-  // Icon,
 } from '@salesforce/design-system-react';
 
 import { ALL_COMPONENTS } from '../redux/constants';
@@ -39,9 +37,14 @@ class Canvas extends Component {
               </div>
             );
           } else {
-            let ReactComponent = componentData.component;
+            const ReactComponent = componentData.component;
             return (
-              <ReactComponent id={componentData.id} className="mbs" children={componentData.children} key={`component-${i}`} />
+              <ReactComponent
+                id={componentData.id}
+                className="mbs"
+                children={componentData.children}
+                key={`component-${i}`}
+              />
             )
           }
         })
