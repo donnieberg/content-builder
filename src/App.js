@@ -29,7 +29,7 @@ class ConnectedApp extends Component {
     this.state = {};
   }
 
-  addComponent = (region, component) => {
+  addComponent = (region) => {
     return (e) => {
       const targetId = e.target.id;
       const componentToAdd = ALL_COMPONENTS.find(x => x.id === targetId);
@@ -43,9 +43,9 @@ class ConnectedApp extends Component {
     return (
       <ul>
         {
-          ALL_COMPONENTS.map((component, i) => {
+          ALL_COMPONENTS.map((component) => {
             return (
-              <li className="mbs ">
+              <li className="mbs" key={`add-${component.id}`}>
                 <Button
                   iconCategory={component.rightIcon.category}
                   iconName={component.rightIcon.name}
@@ -53,7 +53,7 @@ class ConnectedApp extends Component {
                   label={component.label}
                   onClick={this.addComponent('header')}
                   variant="base"
-                  id={component.id}
+                  id={`add-${component.id}`}
                 />
               </li>
             )

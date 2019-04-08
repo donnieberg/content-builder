@@ -33,7 +33,7 @@ class Canvas extends Component {
           } else {
             let ReactComponent = componentData.component;
             return (
-              <ReactComponent className="mbs" children={componentData.children} key={`component-${i}`} />
+              <ReactComponent id={componentData.id} className="mbs" children={componentData.children} key={`component-${i}`} />
             )
           }
         })
