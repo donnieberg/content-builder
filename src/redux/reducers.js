@@ -17,7 +17,7 @@ const initialState = {
       components: [
         {
           component: Accordion,
-          id: 'accordion-001',
+          id: '001',
           children: [
             {
               panelIndex: 0,
@@ -40,7 +40,7 @@ const initialState = {
       components: [
         {
           component: Tabs,
-          id: 'tabs-001',
+          id: '002',
           children: [
             {
               panelIndex: 0,

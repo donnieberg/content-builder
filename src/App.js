@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from '@salesforce/design-system-react';
+import uniqid from 'uniqid';
 
 import { connect } from 'react-redux';
 import { addComponent } from './redux/actions';
@@ -32,7 +33,9 @@ class ConnectedApp extends Component {
   addComponent = (region) => {
     return (e) => {
       const targetId = e.target.id;
-      const componentToAdd = ALL_COMPONENTS.find(x => x.id === targetId);
+      const componentId = uniqid()
+      let componentToAdd = ALL_COMPONENTS.find(x => x.id === targetId);
+      componentToAdd.id = componentId;
       let stateCopy = Object.assign({}, this.props.canvas[region]);
       stateCopy.components.push(componentToAdd);
       this.props.addComponent(region, stateCopy);
@@ -45,7 +48,7 @@ class ConnectedApp extends Component {
         {
           ALL_COMPONENTS.map((component) => {
             return (
-              <li className="mbs" key={`add-${component.id}`}>
+              <li className="mbs" key={component.id}>
                 <Button
                   iconCategory={component.rightIcon.category}
                   iconName={component.rightIcon.name}
@@ -53,7 +56,7 @@ class ConnectedApp extends Component {
                   label={component.label}
                   onClick={this.addComponent('header')}
                   variant="base"
-                  id={`add-${component.id}`}
+                  id={component.id}
                 />
               </li>
             )

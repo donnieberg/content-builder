@@ -29,7 +29,15 @@ class Canvas extends Component {
       return (
         components.map((componentData, i) => {
           if (typeof (componentData.component) === 'string') {
-            return <div className="mbs bg-gray pal" key={`static-${i}`}>{componentData.component}</div>
+            return (
+              <div
+                className="mbs bg-gray pal"
+                id={componentData.id}
+                key={componentData.id}
+              >
+                {componentData.label}
+              </div>
+            );
           } else {
             let ReactComponent = componentData.component;
             return (
