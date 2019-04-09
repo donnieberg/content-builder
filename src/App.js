@@ -31,7 +31,7 @@ class ConnectedApp extends Component {
   }
 
 
-
+  // adding tabs/accordions broken rn
   addComponent(region, component, parentComponentId, panelIndex) {
     console.log(parentComponentId, panelIndex)
     let componentToAdd = ALL_COMPONENTS.find(x => x.id === component);
