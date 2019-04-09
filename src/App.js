@@ -27,19 +27,17 @@ const mapDispatchToProps = dispatch => {
 class ConnectedApp extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.addComponent = this.addComponent.bind(this);
   }
 
-  addComponent = (region) => {
-    return (e) => {
-      const targetId = e.target.id;
-      const componentId = uniqid()
-      let componentToAdd = ALL_COMPONENTS.find(x => x.id === targetId);
-      componentToAdd.id = componentId;
-      let stateCopy = Object.assign({}, this.props.canvas[region]);
-      stateCopy.components.push(componentToAdd);
-      this.props.addComponent(region, stateCopy);
-    }
+
+
+  addComponent(region, component) {
+    let componentToAdd = ALL_COMPONENTS.find(x => x.id === component);
+    componentToAdd.id = uniqid();
+    let stateCopy = Object.assign({}, this.props.canvas[region]);
+    stateCopy.components.push(componentToAdd);
+    this.props.addComponent(region, stateCopy);
   }
 
   renderSidebarButtons() {
@@ -54,7 +52,9 @@ class ConnectedApp extends Component {
                   iconName={component.rightIcon.name}
                   iconPosition="left"
                   label={component.label}
-                  onClick={this.addComponent('header')}
+                  onClick={(e) => {
+                    this.addComponent('header', component.id)
+                  }}
                   variant="base"
                   id={component.id}
                 />
@@ -75,7 +75,7 @@ class ConnectedApp extends Component {
             <h2 className="mbs slds-text-heading_small">Lightning Components</h2>
             {this.renderSidebarButtons()}
           </div>
-          <Canvas data={this.props.canvas} />
+          <Canvas data={this.props.canvas} addComponent={this.addComponent} />
           <div id="properties-sidebar" className="pam bg-white bas border-gray">
             <h2 className="slds-text-heading_small">Properties</h2>
           </div>

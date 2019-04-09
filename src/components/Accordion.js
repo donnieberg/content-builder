@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
 import {
   Accordion as AccordionWrapper,
-  AccordionPanel
+  AccordionPanel,
+  Button,
+  Dropdown,
+  DropdownTrigger,
 } from '@salesforce/design-system-react';
+
+import { ALL_COMPONENTS } from '../redux/constants';
 
 class Accordion extends Component {
   constructor(props) {
@@ -35,7 +40,23 @@ class Accordion extends Component {
             onTogglePanel={(event) => this.togglePanel(event, `${this.props.id}-${i}`)}
             summary={item.label}
           >
-            {item.content}
+            {
+              item.content === null ?
+                <Dropdown
+                  align="left"
+                  className="wi-full"
+                  options={ALL_COMPONENTS}
+                  onSelect={(e) => {
+                    // this.props.addComponent(region, e.value);
+                  }}
+                >
+                  <DropdownTrigger>
+                    <Button label={`Add a Component`} />
+                    {/* <Button label={`Add a Component: ${region} Region`} /> */}
+                  </DropdownTrigger>
+                </Dropdown >
+                : item.content
+            }
           </AccordionPanel>
         ))}
       </AccordionWrapper>

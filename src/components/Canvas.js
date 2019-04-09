@@ -17,11 +17,14 @@ class Canvas extends Component {
           align="left"
           className="wi-full"
           options={ALL_COMPONENTS}
+          onSelect={(e) => {
+            this.props.addComponent(region, e.value);
+          }}
         >
           <DropdownTrigger>
             <Button label={`Add a Component: ${region} Region`} />
           </DropdownTrigger>
-        </Dropdown >
+        </Dropdown>
       );
     } else {
       return (
@@ -44,6 +47,7 @@ class Canvas extends Component {
                 className="mbs"
                 children={componentData.children}
                 key={`component-${i}`}
+                addComponent={this.props.addComponent}
               />
             )
           }

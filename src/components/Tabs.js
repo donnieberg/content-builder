@@ -1,34 +1,41 @@
 import React, { Component } from 'react';
-import { Tabs as TabsWrapper, TabsPanel } from '@salesforce/design-system-react'
+import {
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  Tabs as TabsWrapper,
+  TabsPanel
+} from '@salesforce/design-system-react'
 
-const tabsContent = [
-  {
-    id: '1',
-    content: 'Item One Content',
-    label: 'Item One',
-  }, {
-    id: '2',
-    content: 'Item Two Content',
-    label: 'Item Two',
-  }, {
-    id: '3',
-    content: 'Item Three Content',
-    label: 'Item Three',
-  }
-];
+import { ALL_COMPONENTS } from '../redux/constants';
 
 class Tabs extends Component {
   render() {
     return (
       <TabsWrapper className={this.props.className}>
         {
-          tabsContent.map((item, i) => (
+          this.props.children.map((item, i) => (
             <TabsPanel
-              id={item.id}
-              key={item.id}
+              id={`${item.id}-${i}`}
+              key={`${item.id}-${i}`}
               label={item.label}
             >
-              {item.content}
+              {
+                item.content === null ?
+                  <Dropdown
+                    align="left"
+                    className="wi-full"
+                    options={ALL_COMPONENTS}
+                    onSelect={(e) => {
+                      // this.props.addComponent(region, e.value);
+                    }}
+                  >
+                    <DropdownTrigger>
+                      <Button label={`Add a Component`} />
+                      {/* <Button label={`Add a Component: ${region} Region`} /> */}
+                    </DropdownTrigger>
+                  </Dropdown > : item.content
+              }
             </TabsPanel>
           ))
         }
