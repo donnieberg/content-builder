@@ -48,6 +48,7 @@ class Canvas extends Component {
                 children={componentData.children}
                 key={`component-${i}`}
                 addComponent={this.props.addComponent}
+                region={region}
               />
             )
           }

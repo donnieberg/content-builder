@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   HEADER, COMPONENT_PANEL, CANVAS, PROPERTY_PANEL
 } from './constants';
@@ -22,16 +21,8 @@ const initialState = {
           children: [
             {
               panelIndex: 0,
-              content: null,
-              label: 'Label 1',
-            }, {
-              panelIndex: 1,
-              content: null,
-              label: 'Label 2',
-            }, {
-              panelIndex: 2,
-              content: null,
-              label: 'Label 3',
+              component: 'chatter',
+              label: 'Chatter'
             }
           ]
         }
@@ -45,16 +36,8 @@ const initialState = {
           children: [
             {
               panelIndex: 0,
-              label: 'Label 1',
-              content: null,
-            }, {
-              panelIndex: 1,
-              label: 'Label 2',
-              content: null,
-            }, {
-              panelIndex: 2,
-              label: 'Label 3',
-              content: null,
+              component: 'chatter',
+              label: 'Chatter'
             }
           ]
         }

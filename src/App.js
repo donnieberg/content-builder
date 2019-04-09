@@ -32,12 +32,19 @@ class ConnectedApp extends Component {
 
 
 
-  addComponent(region, component) {
+  addComponent(region, component, parentComponentId, panelIndex) {
+    console.log(parentComponentId, panelIndex)
     let componentToAdd = ALL_COMPONENTS.find(x => x.id === component);
     componentToAdd.id = uniqid();
-    let stateCopy = Object.assign({}, this.props.canvas[region]);
-    stateCopy.components.push(componentToAdd);
-    this.props.addComponent(region, stateCopy);
+    let regionDataCopy = Object.assign({}, this.props.canvas[region]);
+
+    if (panelIndex > -1) {
+      let parentComponentData = regionDataCopy.components.find(x => x.id === parentComponentId);
+      componentToAdd.panelIndex = panelIndex;
+      parentComponentData.children.push(componentToAdd);
+    } else regionDataCopy.components.push(componentToAdd);
+
+    this.props.addComponent(region, regionDataCopy);
   }
 
   renderSidebarButtons() {
