@@ -30,6 +30,7 @@ class Accordion extends Component {
   }
 
   renderComponent(componentData) {
+    // return (<div></div>)
     if (typeof (componentData.component) === 'string') {
       return (
         <div

@@ -32,8 +32,7 @@ class ConnectedApp extends Component {
 
 
   // adding tabs/accordions broken rn
-  addComponent(region, component, parentComponentId, panelIndex) {
-    console.log(parentComponentId, panelIndex)
+  addComponent(region, component, parentComponentId = null, panelIndex = -1) {
     let componentToAdd = ALL_COMPONENTS.find(x => x.id === component);
     componentToAdd.id = uniqid();
     let regionDataCopy = Object.assign({}, this.props.canvas[region]);

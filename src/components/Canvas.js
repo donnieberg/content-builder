@@ -10,8 +10,6 @@ import { ALL_COMPONENTS } from '../redux/constants';
 class Canvas extends Component {
   renderComponents(region, components) {
     if (components.length === 0) {
-
-
       return (
         <Dropdown
           align="left"

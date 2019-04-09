@@ -21,21 +21,7 @@ export const ALL_COMPONENTS = [
   }, {
     id: 'tabs',
     component: Tabs,
-    children: [
-      {
-        panelIndex: 0,
-        content: [],
-        label: 'Label 1',
-      }, {
-        panelIndex: 1,
-        content: [],
-        label: 'Label 2',
-      }, {
-        panelIndex: 2,
-        content: [],
-        label: 'Label 3',
-      }
-    ],
+    children: [],
     label: 'Tabs',
     value: 'tabs',
     rightIcon: {
@@ -45,21 +31,7 @@ export const ALL_COMPONENTS = [
   }, {
     id: 'accordion',
     component: Accordion,
-    children: [
-      {
-        panelIndex: 0,
-        content: [],
-        label: 'Label 1',
-      }, {
-        panelIndex: 1,
-        content: [],
-        label: 'Label 2',
-      }, {
-        panelIndex: 2,
-        content: [],
-        label: 'Label 3',
-      }
-    ],
+    children: [],
     label: 'Accordion',
     value: 'accordion',
     rightIcon: {
