@@ -1,7 +1,8 @@
 {
-  "name": "wysiwyg-proto",
+  "name": "wysiwyg-builder",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://donnieberg.github.io/wysiwyg-builder",
   "dependencies": {
     "gh-pages": "^2.0.1",
     "prop-types": "^15.7.2",
@@ -10,6 +11,8 @@
     "react-scripts": "2.1.5"
   },
   "scripts": {
+    "predeploy": "npm run build", 
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
