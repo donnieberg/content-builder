@@ -1,8 +1,8 @@
 {
-  "name": "wysiwyg-builder",
+  "name": "content-builder",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://donnieberg.github.io/wysiwyg-builder",
+  "homepage": "https://donnieberg.github.io/content-builder",
   "dependencies": {
     "gh-pages": "^2.0.1",
     "prop-types": "^15.7.2",
