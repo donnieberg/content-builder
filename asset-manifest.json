@@ -1,13 +1,13 @@
 {
-  "main.css": "/wysiwyg-builder/static/css/main.7a31f832.chunk.css",
-  "main.js": "/wysiwyg-builder/static/js/main.b1c79a80.chunk.js",
-  "main.js.map": "/wysiwyg-builder/static/js/main.b1c79a80.chunk.js.map",
+  "main.css": "/wysiwyg-builder/static/css/main.f292dc5d.chunk.css",
+  "main.js": "/wysiwyg-builder/static/js/main.774d1a1a.chunk.js",
+  "main.js.map": "/wysiwyg-builder/static/js/main.774d1a1a.chunk.js.map",
   "runtime~main.js": "/wysiwyg-builder/static/js/runtime~main.6562a34e.js",
   "runtime~main.js.map": "/wysiwyg-builder/static/js/runtime~main.6562a34e.js.map",
   "static/js/2.2ee03819.chunk.js": "/wysiwyg-builder/static/js/2.2ee03819.chunk.js",
   "static/js/2.2ee03819.chunk.js.map": "/wysiwyg-builder/static/js/2.2ee03819.chunk.js.map",
   "index.html": "/wysiwyg-builder/index.html",
-  "precache-manifest.d47f519b1f11eeae9a376ed829f2d365.js": "/wysiwyg-builder/precache-manifest.d47f519b1f11eeae9a376ed829f2d365.js",
+  "precache-manifest.b10d1d6e24f52ad8c18cc802ff4d9c41.js": "/wysiwyg-builder/precache-manifest.b10d1d6e24f52ad8c18cc802ff4d9c41.js",
   "service-worker.js": "/wysiwyg-builder/service-worker.js",
-  "static/css/main.7a31f832.chunk.css.map": "/wysiwyg-builder/static/css/main.7a31f832.chunk.css.map"
+  "static/css/main.f292dc5d.chunk.css.map": "/wysiwyg-builder/static/css/main.f292dc5d.chunk.css.map"
 }

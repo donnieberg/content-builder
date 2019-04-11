@@ -4,19 +4,19 @@ self.__precacheManifest = [
     "url": "/wysiwyg-builder/static/js/runtime~main.6562a34e.js"
   },
   {
-    "revision": "b1c79a80f15b3332c666",
-    "url": "/wysiwyg-builder/static/js/main.b1c79a80.chunk.js"
+    "revision": "774d1a1ab722e6a7df4a",
+    "url": "/wysiwyg-builder/static/js/main.774d1a1a.chunk.js"
   },
   {
     "revision": "2ee038190270fa8ae3f3",
     "url": "/wysiwyg-builder/static/js/2.2ee03819.chunk.js"
   },
   {
-    "revision": "b1c79a80f15b3332c666",
-    "url": "/wysiwyg-builder/static/css/main.7a31f832.chunk.css"
+    "revision": "774d1a1ab722e6a7df4a",
+    "url": "/wysiwyg-builder/static/css/main.f292dc5d.chunk.css"
   },
   {
-    "revision": "bb0dbf7f4ed754e49dd6e5d4b8b52e7b",
+    "revision": "a0fefb07cc373f1a25ba243d6a488624",
     "url": "/wysiwyg-builder/index.html"
   }
 ];
