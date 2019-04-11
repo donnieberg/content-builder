@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "/wysiwyg-builder/static/css/main.f292dc5d.chunk.css"
   },
   {
-    "revision": "a0fefb07cc373f1a25ba243d6a488624",
+    "revision": "6709db44a1929ce486a3959cf02f9361",
     "url": "/wysiwyg-builder/index.html"
   }
 ];
