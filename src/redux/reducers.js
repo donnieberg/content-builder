@@ -7,6 +7,7 @@ import {
 } from './actionTypes';
 
 import Accordion from '../components/Accordion';
+import Tabs from '../components/Tabs';
 
 const initialState = {
   test: "test",
@@ -16,26 +17,31 @@ const initialState = {
       components: [
         {
           component: Accordion,
+          id: '001',
           children: [
             {
               panelIndex: 0,
-              content: 'Panel 1',
-              label: 'Label 1',
-            }, {
-              panelIndex: 1,
-              content: 'Panel 2',
-              label: 'Label 2',
-            }, {
-              panelIndex: 2,
-              content: 'Panel 3',
-              label: 'Label 3',
+              component: 'chatter',
+              label: 'Chatter'
             }
           ]
         }
       ],
     },
     main: {
-      components: [],
+      components: [
+        {
+          component: Tabs,
+          id: '002',
+          children: [
+            {
+              panelIndex: 0,
+              component: 'chatter',
+              label: 'Chatter'
+            }
+          ]
+        }
+      ],
     },
     sidebar: {
       components: [],
