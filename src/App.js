@@ -27,12 +27,18 @@ const mapDispatchToProps = dispatch => {
 class ConnectedApp extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      isDragDropMode: false,
+      grabbedComponentType: null,
+      grabbedComponentCurrRegion: 'header'
+    }
+
     this.addComponent = this.addComponent.bind(this);
   }
 
-
-  // adding tabs/accordions broken rn
   addComponent(region, component, parentComponentId = null, panelIndex = -1) {
+    console.log('add component')
     let componentToAdd = ALL_COMPONENTS.find(x => x.id === component);
     componentToAdd.id = uniqid();
     let regionDataCopy = Object.assign({}, this.props.canvas[region]);
@@ -59,7 +65,12 @@ class ConnectedApp extends Component {
                   iconPosition="left"
                   label={component.label}
                   onClick={(e) => {
-                    this.addComponent('header', component.id)
+                    this.setState({
+                      isDragDropMode: true,
+                      grabbedComponentType: component.id
+                    })
+                    // console.log(this.state)
+                    // this.addComponent('header', component.id)
                   }}
                   variant="base"
                   id={component.id}
@@ -81,7 +92,13 @@ class ConnectedApp extends Component {
             <h2 className="mbs slds-text-heading_small">Lightning Components</h2>
             {this.renderSidebarButtons()}
           </div>
-          <Canvas data={this.props.canvas} addComponent={this.addComponent} />
+          <Canvas
+            data={this.props.canvas}
+            addComponent={this.addComponent}
+            isDragDropMode={this.state.isDragDropMode}
+            grabbedComponentType={this.state.grabbedComponentType}
+            grabbedComponentCurrRegion={this.state.grabbedComponentCurrRegion}
+          />
           <div id="properties-sidebar" className="pam bg-white bas border-gray">
             <h2 className="slds-text-heading_small">Properties</h2>
           </div>
