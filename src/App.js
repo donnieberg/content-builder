@@ -13,7 +13,6 @@ import './App.css';
 
 const mapStateToProps = state => {
   return {
-    test: state.test,
     canvas: state.canvas,
   };
 }
@@ -28,18 +27,25 @@ class ConnectedApp extends Component {
   constructor(props) {
     super(props);
 
+    const initAllComponents = Object.assign({}, this.props.canvas);
+
     this.state = {
+      allComponents: initAllComponents,
+      grabbedComponent: null,
       isDragDropMode: false,
+      grabbedComponentIndex: 0,
       grabbedComponentType: null,
       grabbedComponentCurrRegion: 'header'
     }
 
     this.addComponent = this.addComponent.bind(this);
+    this.handleStartDrag = this.handleStartDrag.bind(this);
   }
 
-  addComponent(region, component, parentComponentId = null, panelIndex = -1) {
-    console.log('add component')
-    let componentToAdd = ALL_COMPONENTS.find(x => x.id === component);
+  addComponent(region, componentType, componentIndex = 0, parentComponentId = null, panelIndex = -1) {
+    const cmp = ALL_COMPONENTS.find(x => x.id === componentType);
+    let componentToAdd = Object.assign({}, cmp);
+
     componentToAdd.id = uniqid();
     let regionDataCopy = Object.assign({}, this.props.canvas[region]);
 
@@ -47,9 +53,50 @@ class ConnectedApp extends Component {
       let parentComponentData = regionDataCopy.components.find(x => x.id === parentComponentId);
       componentToAdd.panelIndex = panelIndex;
       parentComponentData.children.push(componentToAdd);
-    } else regionDataCopy.components.push(componentToAdd);
+    } else regionDataCopy.components.splice(componentIndex, 0, componentToAdd);
 
     this.props.addComponent(region, regionDataCopy);
+  }
+
+  handleStartDrag(componentType) {
+    let updatedAllComponents = Object.assign({}, this.props.canvas);
+
+    // can only have one grabbed component at a time
+    // if one is already grabbed, drop it where it currently is & save in redux
+    if (this.state.grabbedComponent !== null) {
+      this.addComponent(
+        this.state.grabbedComponentCurrRegion,
+        this.state.grabbedComponentType,
+        this.state.grabbedComponentIndex
+      );
+
+      // removes existing grabbed component from updatedAllComponents
+      let updatingRegion = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
+      let prevGrabbedComponentIndex = updatingRegion.findIndex(x => x.isGrabbed === true);
+      updatingRegion.splice(prevGrabbedComponentIndex, 1);
+
+      this.setState({
+        grabbedComponentIndex: 0,
+        grabbedComponentCurrRegion: 'header',
+      });
+    }
+
+    // the new grabbed component
+    // had to mess around with referencing a lot - I KEPT OVERWRITING THINGS ON ACCIDENT
+    let cmp = ALL_COMPONENTS.find(x => x.id === componentType);
+    let componentToAdd = Object.assign({}, cmp);
+    componentToAdd.isGrabbed = true;
+    componentToAdd.id = `floating-${componentType}`;
+
+    // adds new grabbed component to updatedAllComponents
+    updatedAllComponents['header'].components.splice(0, 0, componentToAdd);
+
+    this.setState({
+      allComponents: updatedAllComponents,
+      isDragDropMode: true,
+      grabbedComponent: componentToAdd,
+      grabbedComponentType: componentType,
+    });
   }
 
   renderSidebarButtons() {
@@ -64,13 +111,8 @@ class ConnectedApp extends Component {
                   iconName={component.rightIcon.name}
                   iconPosition="left"
                   label={component.label}
-                  onClick={(e) => {
-                    this.setState({
-                      isDragDropMode: true,
-                      grabbedComponentType: component.id
-                    })
-                    // console.log(this.state)
-                    // this.addComponent('header', component.id)
+                  onClick={() => {
+                    this.handleStartDrag(component.id)
                   }}
                   variant="base"
                   id={component.id}
@@ -93,11 +135,9 @@ class ConnectedApp extends Component {
             {this.renderSidebarButtons()}
           </div>
           <Canvas
-            data={this.props.canvas}
-            addComponent={this.addComponent}
+            data={this.state.allComponents}
+            addomponent={this.addComponent}
             isDragDropMode={this.state.isDragDropMode}
-            grabbedComponentType={this.state.grabbedComponentType}
-            grabbedComponentCurrRegion={this.state.grabbedComponentCurrRegion}
           />
           <div id="properties-sidebar" className="pam bg-white bas border-gray">
             <h2 className="slds-text-heading_small">Properties</h2>
