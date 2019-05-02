@@ -4,26 +4,12 @@ import {
   Dropdown,
   DropdownTrigger,
 } from '@salesforce/design-system-react';
-import classnames from 'classnames';
+
+import { renderComponent } from '../helpers';
 
 import { ALL_COMPONENTS } from '../redux/constants';
 
 class Canvas extends Component {
-  constructor(props) {
-    super(props);
-    this.handleKeyEvent = this.handleKeyEvent.bind(this);
-  }
-
-  handleKeyEvent = (event) => {
-    if (event.key === ' ') {
-      this.handleSpaceKey(event);
-    }
-  }
-
-  handleSpaceKey(event) {
-    console.log(event.key);
-  }
-
   renderComponents(region, components) {
     if (components.length === 0) {
       return (
@@ -31,9 +17,9 @@ class Canvas extends Component {
           align="left"
           className="wi-full"
           options={ALL_COMPONENTS}
-        // onSelect={(e) => {
-        //   this.props.addComponent(region, e.value);
-        // }}
+          onSelect={(e) => {
+            this.props.addComponent(region, e.value);
+          }}
         >
           <DropdownTrigger>
             <Button label={`Add a Component: ${region} Region`} />
@@ -42,38 +28,14 @@ class Canvas extends Component {
       );
     } else {
       return (
-        components.map((componentData, i) => {
-          if (typeof (componentData.component) === 'string') {
-            return (
-              <div
-                className={classnames("mbs bg-gray pal",
-                  {
-                    "grabbed": componentData.isGrabbed,
-                  }
-                )}
-                id={componentData.id}
-                key={componentData.id}
-                tabIndex="0"
-                onKeyDown={this.handleKeyEvent}
-              >
-                {componentData.label}
-              </div>
-            );
-          } else {
-            const ReactComponent = componentData.component;
-            return (
-              <ReactComponent
-                id={componentData.id}
-                className="mbs"
-                children={componentData.children}
-                key={`component-${i}`}
-                addComponent={this.props.addComponent}
-                region={region}
-              // onKeyDown={this.handleKeyEvent}
-              />
-            )
-          }
-        })
+        components.map((componentData) => (
+          renderComponent(
+            componentData,
+            region,
+            this.props.handleKeyDown,
+            this.props.handleStartDrag
+          )
+        ))
       )
     }
   }
@@ -85,7 +47,7 @@ class Canvas extends Component {
           Object.keys(this.props.data).map((region, i) => {
             return (
               <section
-                id={`builder-${region}`}
+                id={this.props.canvasRegions[i]}
                 className="builder-region slds-text-align_center"
                 aria-labelledby={`builder-${region}-header`}
                 key={i}

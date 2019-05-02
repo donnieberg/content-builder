@@ -7,12 +7,13 @@ import {
   DropdownTrigger,
 } from '@salesforce/design-system-react';
 
+import { renderComponent } from '../helpers';
+
 import { ALL_COMPONENTS, ALL_LABELS } from '../redux/constants';
 
 class Accordion extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       expandedPanels: {},
     };
@@ -27,32 +28,6 @@ class Accordion extends Component {
         [id]: !state.expandedPanels[id],
       },
     }));
-  }
-
-  renderComponent(componentData) {
-    if (typeof (componentData.component) === 'string') {
-      return (
-        <div
-          className="mbs bg-gray pal"
-          id={componentData.id}
-          key={componentData.id}
-        >
-          {componentData.label}
-        </div>
-      );
-    } else {
-      const ReactComponent = componentData.component;
-      return (
-        <ReactComponent
-          id={componentData.id}
-          className="mbs"
-          children={componentData.children}
-          key={componentData.id}
-          addComponent={this.props.addComponent}
-          region={this.props.region}
-        />
-      )
-    }
   }
 
   renderPanel(label, panelIndex) {
@@ -83,7 +58,12 @@ class Accordion extends Component {
             </Dropdown> : <div>
               {
                 panelComponents.map((componentData, i) => (
-                  this.renderComponent(componentData)
+                  renderComponent(
+                    componentData,
+                    this.props.region,
+                    this.props.handleKeyDown,
+                    this.props.handleStartDrag,
+                  )
                 ))
               }
             </div>

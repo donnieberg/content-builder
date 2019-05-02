@@ -7,35 +7,11 @@ import {
   TabsPanel
 } from '@salesforce/design-system-react'
 
+import { renderComponent } from '../helpers';
+
 import { ALL_COMPONENTS, ALL_LABELS } from '../redux/constants';
 
 class Tabs extends Component {
-  renderComponent(componentData) {
-    if (typeof (componentData.component) === 'string') {
-      return (
-        <div
-          className="mbs bg-gray pal"
-          id={componentData.id}
-          key={componentData.id}
-        >
-          {componentData.label}
-        </div>
-      );
-    } else {
-      const ReactComponent = componentData.component;
-      return (
-        <ReactComponent
-          id={componentData.id}
-          className="mbs"
-          children={componentData.children}
-          key={componentData.id}
-          addComponent={this.props.addComponent}
-          region={this.props.region}
-        />
-      )
-    }
-  }
-
   renderPanel(label, panelIndex) {
     const panelComponents = this.props.children.filter(component => component.panelIndex === panelIndex);
 
@@ -61,7 +37,12 @@ class Tabs extends Component {
             </Dropdown> : <div>
               {
                 panelComponents.map((componentData, i) => (
-                  this.renderComponent(componentData)
+                  renderComponent(
+                    componentData,
+                    this.props.region,
+                    this.props.handleKeyDown,
+                    this.props.handleStartDrag,
+                  )
                 ))
               }
             </div>

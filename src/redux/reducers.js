@@ -1,5 +1,6 @@
 import {
-  HEADER, COMPONENT_PANEL, CANVAS, PROPERTY_PANEL
+  HEADER, COMPONENT_PANEL, CANVAS, PROPERTY_PANEL,
+  CANVAS_HEADER, CANVAS_MAIN, CANVAS_SIDEBAR,
 } from './constants';
 
 import {
@@ -12,17 +13,21 @@ import Tabs from '../components/Tabs';
 const initialState = {
   test: "test",
   regions: [HEADER, COMPONENT_PANEL, CANVAS, PROPERTY_PANEL],
+  canvasRegions: [CANVAS_HEADER, CANVAS_MAIN, CANVAS_SIDEBAR],
   canvas: {
     header: {
       components: [
         {
           component: Accordion,
           id: '001',
+          value: 'accordion',
           children: [
             {
               panelIndex: 0,
               component: 'chatter',
-              label: 'Chatter'
+              label: 'Chatter',
+              id: '003',
+              value: 'chatter',
             }
           ]
         }
@@ -33,11 +38,13 @@ const initialState = {
         {
           component: Tabs,
           id: '002',
+          value: 'tabs',
           children: [
             {
               panelIndex: 0,
               component: 'chatter',
-              label: 'Chatter'
+              label: 'Chatter',
+              value: 'chatter',
             }
           ]
         }

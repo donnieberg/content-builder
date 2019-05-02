@@ -28,12 +28,6 @@
   transform: rotate(1deg);
 }
 
-.grabbed:focus { 
-  outline: none; 
-  border: 1px solid;
-  border-color: rgb(21, 137, 238);
-}
-
 /*  
  *  ============================================================================= 
  *  SINGLE PURPOSE CLASSES  
