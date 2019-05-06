@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { Button } from '@salesforce/design-system-react';
+
+
 import uniqid from 'uniqid';
 
 import { connect } from 'react-redux';
-import { addComponent } from './redux/actions';
+import { updateRegion } from './redux/actions';
 import { ALL_COMPONENTS } from './redux/constants';
 
 import Canvas from './components/Canvas';
 import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 
 import './App.css';
 
@@ -20,7 +22,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addComponent: (componentData, canvasRegion) => dispatch(addComponent(componentData, canvasRegion)),
+    updateRegion: (region, regionData) => dispatch(updateRegion(region, regionData)),
   };
 }
 
@@ -45,15 +47,21 @@ class ConnectedApp extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  componentDidUpdate() {
-    if (this.state.currFocusedElement !== null) {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.currFocusedElement !== null && prevState.currFocusedElement !== this.state.currFocusedElement) {
       document.getElementById(this.state.currFocusedElement).focus();
     }
   }
 
   addComponent(region, componentType, componentIndex = 0, parentComponentId = null, panelIndex = -1) {
     const cmp = ALL_COMPONENTS.find(x => x.id === componentType);
-    let componentToAdd = Object.assign({}, cmp);
+    let componentToAdd;
+
+    if (this.state.grabbedComponent === null) componentToAdd = Object.assign({}, cmp);
+    else {
+      componentToAdd = Object.assign({}, this.state.grabbedComponent);
+      componentToAdd.isGrabbed = false;
+    };
 
     componentToAdd.id = uniqid();
     let regionDataCopy = Object.assign({}, this.props.canvas[region]);
@@ -64,7 +72,9 @@ class ConnectedApp extends Component {
       parentComponentData.children.push(componentToAdd);
     } else regionDataCopy.components.splice(componentIndex, 0, componentToAdd);
 
-    this.props.addComponent(region, regionDataCopy);
+    this.props.updateRegion(region, regionDataCopy);
+    this.setState({ currFocusedElement: componentToAdd.id });
+
     return componentToAdd.id;
   }
 
@@ -95,38 +105,44 @@ class ConnectedApp extends Component {
 
   handleStartDrag(componentType, event = null) {
     let updatedAllComponents = Object.assign({}, this.props.canvas);
-    let newRegion = 'header'
+    let newRegion = 'header';
+    let componentToAdd;
+    let newComponentIndex = 0;
 
-    // can only have one grabbed component at a time
-    // if one is already grabbed, drop it where it currently is & save in redux
+    // can only have one grabbed component at a time - drop currently grabbed thing before grab new one
     if (this.state.grabbedComponent !== null) this.handleDrop();
 
     // if on a component already in redux, need to remove the component from redux and put it in app state
     if (event !== null) {
-      const region = event.target.closest('section');
-      newRegion = region.id.substring(8);
+      const regionHTML = event.target.closest('section');
+      const componentHTML = event.target.closest('div.component')
+      newRegion = regionHTML.id.substring(8);
 
-      // updatedAllComponents[newRegion].components.splice();
+      // gets the existing component & index from redux
+      componentToAdd = Object.assign(
+        {},
+        updatedAllComponents[newRegion].components.find(cmp => cmp.id === componentHTML.id)
+      );
+      newComponentIndex = updatedAllComponents[newRegion].components.findIndex(cmp => cmp.id === componentHTML.id);
 
-      // updated
-      console.log(region, newRegion)
-      // need to find the region the event was in
-      // need to remove the component from redux
-      // this.props.canvas
+      // removes component from local state and redux state
+      updatedAllComponents[newRegion].components.splice(newComponentIndex, 1);
+      this.props.updateRegion(newRegion, updatedAllComponents[newRegion]);
+
+      componentType = componentToAdd.value;
+    } else {
+      // the new grabbed component
+      // had to mess around with referencing a lot - I KEPT OVERWRITING THINGS ON ACCIDENT
+      let cmp = ALL_COMPONENTS.find(x => x.id === componentType);
+      componentToAdd = Object.assign({}, cmp);
     }
 
-    // the new grabbed component
-    // had to mess around with referencing a lot - I KEPT OVERWRITING THINGS ON ACCIDENT
-    let cmp = ALL_COMPONENTS.find(x => x.id === componentType);
-    let componentToAdd = Object.assign({}, cmp);
-
-    if (event !== null) { }
-
-    componentToAdd.isGrabbed = true;
     componentToAdd.id = `floating-${componentType}`;
+    componentToAdd.isGrabbed = true;
+
 
     // adds new grabbed component to updatedAllComponents
-    updatedAllComponents['header'].components.splice(0, 0, componentToAdd);
+    updatedAllComponents[newRegion].components.splice(newComponentIndex, 0, componentToAdd);
 
     this.setState({
       allComponents: updatedAllComponents,
@@ -207,41 +223,12 @@ class ConnectedApp extends Component {
     });
   }
 
-  renderSidebarButtons() {
-    return (
-      <ul>
-        {
-          ALL_COMPONENTS.map((component) => {
-            return (
-              <li className="mbs" key={component.id}>
-                <Button
-                  iconCategory={component.rightIcon.category}
-                  iconName={component.rightIcon.name}
-                  iconPosition="left"
-                  label={component.label}
-                  onClick={() => {
-                    this.handleStartDrag(component.id)
-                  }}
-                  variant="base"
-                  id={component.id}
-                />
-              </li>
-            )
-          })
-        }
-      </ul>
-    );
-  }
-
   render() {
     return (
       <div className="App ht-full dg app-grid bg-gray">
         <Header />
         <main className="dg main-grid dg-stretch">
-          <div id="components-sidebar" className="pam bg-white bas border-gray">
-            <h2 className="mbs slds-text-heading_small">Lightning Components</h2>
-            {this.renderSidebarButtons()}
-          </div>
+          <Sidebar />
           <Canvas
             data={this.state.allComponents}
             addComponent={this.addComponent}

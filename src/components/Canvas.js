@@ -28,14 +28,17 @@ class Canvas extends Component {
       );
     } else {
       return (
-        components.map((componentData) => (
-          renderComponent(
-            componentData,
-            region,
-            this.props.handleKeyDown,
-            this.props.handleStartDrag
-          )
-        ))
+        components.map((componentData) => {
+          if (componentData !== undefined) {
+            return renderComponent(
+              componentData,
+              region,
+              this.props.handleKeyDown,
+              this.props.handleStartDrag
+            )
+          }
+          return null;
+        })
       )
     }
   }

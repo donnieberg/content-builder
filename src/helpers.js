@@ -6,7 +6,7 @@ export function renderComponent(componentData, region, handleKeyDown, handleStar
   if (typeof (componentData.component) === 'string') {
     return (
       <div
-        className={classnames(
+        className={classnames("component",
           {
             "grabbed": componentData.isGrabbed,
           }
@@ -41,6 +41,11 @@ export function renderComponent(componentData, region, handleKeyDown, handleStar
     const ReactComponent = componentData.component;
     return (
       <div
+        className={classnames("component",
+          {
+            "grabbed": componentData.isGrabbed,
+          }
+        )}
         key={`component-${componentData.id}`}
         onKeyDown={handleKeyDown}
         tabIndex="0"

@@ -1,1 +1,1 @@
-export const ADD_COMPONENT = "ADD_COMPONENT";
+export const UPDATE_REGION = "UPDATE_REGION";

@@ -4,7 +4,7 @@ import {
 } from './constants';
 
 import {
-  ADD_COMPONENT
+  UPDATE_REGION
 } from './actionTypes';
 
 import Accordion from '../components/Accordion';
@@ -58,7 +58,7 @@ const initialState = {
 
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_COMPONENT:
+    case UPDATE_REGION:
       return {
         ...state,
         canvas: {
