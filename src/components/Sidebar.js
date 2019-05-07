@@ -2,33 +2,26 @@ import React, { Component } from 'react';
 import { Button, Icon } from '@salesforce/design-system-react';
 
 import { ALL_COMPONENTS } from '../redux/constants';
+import { getNewIndex } from '../helpers';
 
 class Sidebar extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      currIndex: 0,
-    };
+    this.state = { currIndex: 0 };
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     let currComponent = ALL_COMPONENTS[this.state.currIndex];
-    document.getElementById(currComponent.id).focus();
+    if (prevState.currIndex !== this.state.currIndex) {
+      document.getElementById(currComponent.id).focus();
+    }
   }
 
   handleKeyDown(event) {
-    let newIndex = this.state.currIndex;
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      newIndex++;
-      if (newIndex > ALL_COMPONENTS.length - 1) newIndex = ALL_COMPONENTS.length - 1;
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      newIndex--;
-      if (newIndex < 0) newIndex = 0;
-    }
+    let newIndex;
+    if (event.key === 'ArrowDown') newIndex = getNewIndex(ALL_COMPONENTS, this.state.currIndex, 'add');
+    if (event.key === 'ArrowUp') newIndex = getNewIndex(ALL_COMPONENTS, this.state.currIndex, 'sub');
     this.setState({ currIndex: newIndex });
   }
 
@@ -48,7 +41,7 @@ class Sidebar extends Component {
                     label={component.label}
                     onKeyDown={this.handleKeyDown}
                     onClick={() => {
-                      this.handleStartDrag(component.id)
+                      this.props.handleStartDrag(component.id)
                     }}
                     variant="base"
                     id={component.id}

@@ -1,15 +1,10 @@
-import React, { Component } from 'react';
-import {
-  Button,
-  Dropdown,
-  DropdownTrigger,
-  Tabs as TabsWrapper,
-  TabsPanel
-} from '@salesforce/design-system-react'
+import React, { Component, Fragment } from 'react';
+import { Tabs as TabsWrapper, TabsPanel } from '@salesforce/design-system-react';
+
+import AddCompButton from './AddCompButton';
 
 import { renderComponent } from '../helpers';
-
-import { ALL_COMPONENTS, ALL_LABELS } from '../redux/constants';
+import { ALL_LABELS } from '../redux/constants';
 
 class Tabs extends Component {
   renderPanel(label, panelIndex) {
@@ -23,18 +18,13 @@ class Tabs extends Component {
       >
         {
           panelComponents.length === 0 ?
-            <Dropdown
-              align="left"
-              className="wi-full"
-              options={ALL_COMPONENTS}
-              onSelect={(e) => {
-                this.props.addComponent(this.props.region, e.value, this.props.id, panelIndex);
-              }}
-            >
-              <DropdownTrigger>
-                <Button label={`Add a Component: Tabs Panel ${panelIndex + 1}`} />
-              </DropdownTrigger>
-            </Dropdown> : <div>
+            <AddCompButton
+              addComponent={this.props.addComponent}
+              id={this.props.id}
+              label={`Add a Component: Tabs Panel ${panelIndex + 1}`}
+              panelIndex={panelIndex}
+              region={this.props.region}
+            /> : <Fragment>
               {
                 panelComponents.map((componentData, i) => (
                   renderComponent(
@@ -45,7 +35,7 @@ class Tabs extends Component {
                   )
                 ))
               }
-            </div>
+            </Fragment>
         }
       </TabsPanel>
     );

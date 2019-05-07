@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-
-
 import uniqid from 'uniqid';
 
 import { connect } from 'react-redux';
 import { updateRegion } from './redux/actions';
 import { ALL_COMPONENTS } from './redux/constants';
+
+import {
+  cloneObject,
+  getAssistiveText,
+  getNewIndex,
+  getObjectbyKey,
+} from './helpers';
 
 import Canvas from './components/Canvas';
 import Header from './components/Header';
@@ -29,17 +34,17 @@ const mapDispatchToProps = dispatch => {
 class ConnectedApp extends Component {
   constructor(props) {
     super(props);
-
-    const initAllComponents = Object.assign({}, this.props.canvas);
+    const initAllComponents = cloneObject(this.props.canvas);
 
     this.state = {
       allComponents: initAllComponents,
-      grabbedComponent: null,
-      isDragDropMode: false,
+      assistiveText: '',
       currFocusedElement: null,
+      grabbedComponent: null,
+      grabbedComponentCurrRegion: 'header',
       grabbedComponentIndex: 0,
       grabbedComponentType: null,
-      grabbedComponentCurrRegion: 'header'
+      isDragDropMode: false,
     }
 
     this.addComponent = this.addComponent.bind(this);
@@ -47,39 +52,42 @@ class ConnectedApp extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.currFocusedElement !== null && prevState.currFocusedElement !== this.state.currFocusedElement) {
+  componentDidUpdate() {
+    if (this.state.currFocusedElement !== null) {
       document.getElementById(this.state.currFocusedElement).focus();
     }
   }
 
   addComponent(region, componentType, componentIndex = 0, parentComponentId = null, panelIndex = -1) {
-    const cmp = ALL_COMPONENTS.find(x => x.id === componentType);
     let componentToAdd;
 
-    if (this.state.grabbedComponent === null) componentToAdd = Object.assign({}, cmp);
-    else {
-      componentToAdd = Object.assign({}, this.state.grabbedComponent);
-      componentToAdd.isGrabbed = false;
+    if (this.state.grabbedComponent === null) {
+      const cmp = getObjectbyKey(ALL_COMPONENTS, 'id', componentType);
+      componentToAdd = cloneObject(cmp);
+    } else {
+      componentToAdd = cloneObject(this.state.grabbedComponent);
     };
 
     componentToAdd.id = uniqid();
-    let regionDataCopy = Object.assign({}, this.props.canvas[region]);
+    componentToAdd.isGrabbed = false;
+
+    let regionDataCopy = cloneObject(this.props.canvas[region]);
 
     if (panelIndex > -1) {
-      let parentComponentData = regionDataCopy.components.find(x => x.id === parentComponentId);
+      let parentComponentData = getObjectbyKey(regionDataCopy.components, 'id', parentComponentId);
       componentToAdd.panelIndex = panelIndex;
-      parentComponentData.children.push(componentToAdd);
+      parentComponentData.children.splice(panelIndex, 0, componentToAdd);
     } else regionDataCopy.components.splice(componentIndex, 0, componentToAdd);
 
     this.props.updateRegion(region, regionDataCopy);
     this.setState({ currFocusedElement: componentToAdd.id });
 
+
     return componentToAdd.id;
   }
 
   handleDrop(shouldFocusDroppedComp) {
-    let updatedAllComponents = Object.assign({}, this.props.canvas);
+    let updatedAllComponents = cloneObject(this.props.canvas);
     let droppedComponentID = this.addComponent(
       this.state.grabbedComponentCurrRegion,
       this.state.grabbedComponentType,
@@ -88,12 +96,21 @@ class ConnectedApp extends Component {
 
     // removes existing grabbed component from updatedAllComponents
     let updatingRegion = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
-    let prevGrabbedComponentIndex = updatingRegion.findIndex(x => x.isGrabbed === true);
+    let prevGrabbedComponentIndex = updatingRegion.findIndex(el => el.isGrabbed === true);
     updatingRegion.splice(prevGrabbedComponentIndex, 1);
+
+    let updatedAssistiveText = getAssistiveText(
+      this.state.grabbedComponentType,
+      this.state.grabbedComponentCurrRegion,
+      this.state.grabbedComponentIndex,
+      updatingRegion.length,
+      'dropped'
+    );
 
     this.setState((prevState) => {
       return {
         allComponents: updatedAllComponents,
+        assistiveText: updatedAssistiveText,
         currFocusedElement: shouldFocusDroppedComp ? droppedComponentID : prevState.currFocusedElement,
         grabbedComponent: null,
         grabbedComponentIndex: 0,
@@ -104,7 +121,7 @@ class ConnectedApp extends Component {
   }
 
   handleStartDrag(componentType, event = null) {
-    let updatedAllComponents = Object.assign({}, this.props.canvas);
+    let updatedAllComponents = cloneObject(this.props.canvas);
     let newRegion = 'header';
     let componentToAdd;
     let newComponentIndex = 0;
@@ -119,36 +136,41 @@ class ConnectedApp extends Component {
       newRegion = regionHTML.id.substring(8);
 
       // gets the existing component & index from redux
-      componentToAdd = Object.assign(
-        {},
-        updatedAllComponents[newRegion].components.find(cmp => cmp.id === componentHTML.id)
+      componentToAdd = cloneObject(
+        getObjectbyKey(updatedAllComponents[newRegion].components, 'id', componentHTML.id)
       );
       newComponentIndex = updatedAllComponents[newRegion].components.findIndex(cmp => cmp.id === componentHTML.id);
 
       // removes component from local state and redux state
       updatedAllComponents[newRegion].components.splice(newComponentIndex, 1);
       this.props.updateRegion(newRegion, updatedAllComponents[newRegion]);
-
-      componentType = componentToAdd.value;
     } else {
       // the new grabbed component
       // had to mess around with referencing a lot - I KEPT OVERWRITING THINGS ON ACCIDENT
-      let cmp = ALL_COMPONENTS.find(x => x.id === componentType);
-      componentToAdd = Object.assign({}, cmp);
+      const cmp = getObjectbyKey(ALL_COMPONENTS, 'id', componentType);
+      componentToAdd = cloneObject(cmp);
     }
 
     componentToAdd.id = `floating-${componentType}`;
     componentToAdd.isGrabbed = true;
 
-
-    // adds new grabbed component to updatedAllComponents
     updatedAllComponents[newRegion].components.splice(newComponentIndex, 0, componentToAdd);
+
+    let updatedAssistiveText = getAssistiveText(
+      componentType,
+      newRegion,
+      newComponentIndex,
+      updatedAllComponents[newRegion].components.length,
+      'grabbed'
+    );
 
     this.setState({
       allComponents: updatedAllComponents,
+      assistiveText: updatedAssistiveText,
       currFocusedElement: componentToAdd.id,
       isDragDropMode: true,
       grabbedComponent: componentToAdd,
+      grabbedComponentIndex: newComponentIndex,
       grabbedComponentType: componentType,
       grabbedComponentCurrRegion: newRegion,
     });
@@ -168,43 +190,38 @@ class ConnectedApp extends Component {
 
   handleUpDown(event) {
     event.preventDefault();
-    let updatedAllComponents = Object.assign({}, this.props.canvas);
+    let updatedAllComponents = cloneObject(this.props.canvas);
     let updatedRegion = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
     const oldIndex = this.state.grabbedComponentIndex;
-    let newIndex = this.state.grabbedComponentIndex;
-
-    if (event.key === 'ArrowDown') {
-      newIndex++;
-      if (newIndex > updatedRegion.length - 1) newIndex = updatedRegion.length - 1;
-    } else if (event.key === 'ArrowUp') {
-      newIndex--;
-      if (newIndex < 0) newIndex = 0;
-    }
+    let newIndex = getNewIndex(updatedRegion, oldIndex, 'ArrowDown' ? 'add' : 'sub');
 
     updatedRegion.splice(newIndex, 0, updatedRegion.splice(oldIndex, 1)[0]);
     updatedAllComponents[this.state.grabbedComponentCurrRegion].component = updatedRegion;
 
+    let updatedAssistiveText = getAssistiveText(
+      this.state.grabbedComponentType,
+      this.state.grabbedComponentCurrRegion,
+      newIndex,
+      updatedRegion.length,
+      'grabbed'
+    );
+
     this.setState({
       allComponents: updatedAllComponents,
+      assistiveText: updatedAssistiveText,
       grabbedComponentIndex: newIndex,
     });
   }
 
   handleRightLeft(event) {
     event.preventDefault();
-    let updatedAllComponents = Object.assign({}, this.props.canvas);
+    let updatedAllComponents = cloneObject(this.props.canvas);
     const oldRegionName = `builder-${this.state.grabbedComponentCurrRegion}`;
-    let newRegionIndex = this.props.canvasRegions.findIndex(reg => reg === oldRegionName);
-
-    if (event.key === 'ArrowRight') {
-      newRegionIndex++;
-      if (newRegionIndex > this.props.canvasRegions.length - 1) {
-        newRegionIndex = this.props.canvasRegions.length - 1;
-      }
-    } else if (event.key === 'ArrowLeft') {
-      newRegionIndex--;
-      if (newRegionIndex < 0) newRegionIndex = 0;
-    }
+    let newRegionIndex = getNewIndex(
+      this.props.canvasRegions,
+      this.props.canvasRegions.findIndex(reg => reg === oldRegionName),
+      'ArrowRight' ? 'add' : 'sub'
+    );
 
     // take the 'builder-' part out of the name
     const newRegionName = this.props.canvasRegions[newRegionIndex].substring(8);
@@ -216,8 +233,17 @@ class ConnectedApp extends Component {
     // add grabbed to top of new region
     updatedNewRegionData.splice(0, 0, this.state.grabbedComponent);
 
+    let updatedAssistiveText = getAssistiveText(
+      this.state.grabbedComponentType,
+      newRegionName,
+      0,
+      updatedNewRegionData.length,
+      'grabbed'
+    );
+
     this.setState({
       allComponents: updatedAllComponents,
+      assistiveText: updatedAssistiveText,
       grabbedComponentIndex: 0,
       grabbedComponentCurrRegion: newRegionName,
     });
@@ -228,7 +254,7 @@ class ConnectedApp extends Component {
       <div className="App ht-full dg app-grid bg-gray">
         <Header />
         <main className="dg main-grid dg-stretch">
-          <Sidebar />
+          <Sidebar handleStartDrag={this.handleStartDrag} />
           <Canvas
             data={this.state.allComponents}
             addComponent={this.addComponent}
@@ -241,6 +267,9 @@ class ConnectedApp extends Component {
             <h2 className="slds-text-heading_small">Properties</h2>
           </div>
         </main>
+        <div aria-live="assertive" className="">
+          {this.state.assistiveText}
+        </div>
       </div>
     );
   }

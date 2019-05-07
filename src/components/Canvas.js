@@ -34,7 +34,8 @@ class Canvas extends Component {
               componentData,
               region,
               this.props.handleKeyDown,
-              this.props.handleStartDrag
+              this.props.handleStartDrag,
+              this.props.addComponent
             )
           }
           return null;
