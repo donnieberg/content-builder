@@ -193,7 +193,7 @@ class ConnectedApp extends Component {
     let updatedAllComponents = cloneObject(this.props.canvas);
     let updatedRegion = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
     const oldIndex = this.state.grabbedComponentIndex;
-    let newIndex = getNewIndex(updatedRegion, oldIndex, 'ArrowDown' ? 'add' : 'sub');
+    let newIndex = getNewIndex(updatedRegion, oldIndex, event.key === 'ArrowDown' ? 'add' : 'sub');
 
     updatedRegion.splice(newIndex, 0, updatedRegion.splice(oldIndex, 1)[0]);
     updatedAllComponents[this.state.grabbedComponentCurrRegion].component = updatedRegion;
@@ -220,7 +220,7 @@ class ConnectedApp extends Component {
     let newRegionIndex = getNewIndex(
       this.props.canvasRegions,
       this.props.canvasRegions.findIndex(reg => reg === oldRegionName),
-      'ArrowRight' ? 'add' : 'sub'
+      event.key === 'ArrowRight' ? 'add' : 'sub'
     );
 
     // take the 'builder-' part out of the name

@@ -29,7 +29,7 @@ class Canvas extends Component {
     } else {
       return (
         components.map((componentData) => {
-          if (componentData !== undefined) {
+          if (componentData !== undefined || componentData !== null) {
             return renderComponent(
               componentData,
               region,

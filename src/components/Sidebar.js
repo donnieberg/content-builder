@@ -19,9 +19,9 @@ class Sidebar extends Component {
   }
 
   handleKeyDown(event) {
-    let newIndex;
+    let newIndex = this.state.currIndex;
     if (event.key === 'ArrowDown') newIndex = getNewIndex(ALL_COMPONENTS, this.state.currIndex, 'add');
-    if (event.key === 'ArrowUp') newIndex = getNewIndex(ALL_COMPONENTS, this.state.currIndex, 'sub');
+    else if (event.key === 'ArrowUp') newIndex = getNewIndex(ALL_COMPONENTS, this.state.currIndex, 'sub');
     this.setState({ currIndex: newIndex });
   }
 
