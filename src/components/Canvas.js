@@ -5,6 +5,8 @@ import {
   DropdownTrigger,
 } from '@salesforce/design-system-react';
 
+import { renderComponent } from '../helpers';
+
 import { ALL_COMPONENTS } from '../redux/constants';
 
 class Canvas extends Component {
@@ -26,30 +28,17 @@ class Canvas extends Component {
       );
     } else {
       return (
-        components.map((componentData, i) => {
-          if (typeof (componentData.component) === 'string') {
-            return (
-              <div
-                className="mbs bg-gray pal"
-                id={componentData.id}
-                key={componentData.id}
-              >
-                {componentData.label}
-              </div>
-            );
-          } else {
-            const ReactComponent = componentData.component;
-            return (
-              <ReactComponent
-                id={componentData.id}
-                className="mbs"
-                children={componentData.children}
-                key={`component-${i}`}
-                addComponent={this.props.addComponent}
-                region={region}
-              />
+        components.map((componentData) => {
+          if (componentData !== undefined || componentData !== null) {
+            return renderComponent(
+              componentData,
+              region,
+              this.props.handleKeyDown,
+              this.props.handleStartDrag,
+              this.props.addComponent
             )
           }
+          return null;
         })
       )
     }
@@ -62,13 +51,13 @@ class Canvas extends Component {
           Object.keys(this.props.data).map((region, i) => {
             return (
               <section
-                id={`builder-${region}`}
+                id={this.props.canvasRegions[i]}
                 className="builder-region slds-text-align_center"
                 aria-labelledby={`builder-${region}-header`}
                 key={i}
               >
                 <h2 className="slds-assistive-text">{region} region</h2>
-                <div className="mal">
+                <div className="mal" id={`builder-${region}-components`}>
                   {this.renderComponents(region, this.props.data[region].components)}
                 </div>
               </section>

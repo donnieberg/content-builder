@@ -1,9 +1,9 @@
 import {
-  ADD_COMPONENT
+  UPDATE_REGION
 } from './actionTypes';
 
-export const addComponent = (region, newRegionData) => ({
-  type: ADD_COMPONENT,
+export const updateRegion = (region, newRegionData) => ({
+  type: UPDATE_REGION,
   region: region,
   newRegionData: newRegionData,
 });
