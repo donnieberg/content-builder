@@ -27,7 +27,12 @@ class Sidebar extends Component {
 
   render() {
     return (
-      <div id="components-sidebar" className="pam bg-white bas border-gray">
+      <div 
+        id="components-sidebar" 
+        className="pam bg-white bas border-gray"
+        ref={this.props.sidebarRef}
+        tabIndex="-1"
+      >
         <h2 className="mbs slds-text-heading_small">Lightning Components</h2>
         <ul>
           {

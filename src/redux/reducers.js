@@ -4,7 +4,8 @@ import {
 } from './constants';
 
 import {
-  UPDATE_REGION
+  UPDATE_REGION,
+  UPDATE_FOCUSED_REGION
 } from './actionTypes';
 
 import Accordion from '../components/Accordion';
@@ -13,6 +14,7 @@ import Tabs from '../components/Tabs';
 const initialState = {
   test: "test",
   regions: [HEADER, COMPONENT_PANEL, CANVAS, PROPERTY_PANEL],
+  currFocusedRegion: null,
   canvasRegions: [CANVAS_HEADER, CANVAS_MAIN, CANVAS_SIDEBAR],
   canvas: {
     header: {

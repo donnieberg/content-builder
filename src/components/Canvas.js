@@ -46,7 +46,12 @@ class Canvas extends Component {
 
   render() {
     return (
-      <div id="main-builder" className="maxs mbn pam pbn bg-blue dg builder-grid dg-stretch">
+      <div 
+        id="main-builder" 
+        className="maxs mbn pam pbn bg-blue dg builder-grid dg-stretch"
+        ref={this.props.canvasRef}
+        tabIndex="-1"
+      >
         {
           Object.keys(this.props.data).map((region, i) => {
             return (
