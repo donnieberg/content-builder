@@ -34,7 +34,7 @@ export function renderComponent(componentData, region, handleKeyDown, handleStar
   if (typeof (componentData.component) === 'string') {
     return (
       <div
-        className={classnames("component",
+        className={classnames("component pos-rel",
           {
             "grabbed": componentData.isGrabbed,
           }
@@ -45,23 +45,27 @@ export function renderComponent(componentData, region, handleKeyDown, handleStar
         onKeyDown={handleKeyDown}
         data-type={componentData.value}
       >
-        <ButtonGroup className="">
+        <div className="pas pos-abs right-0 z-above">
           <Button
             assistiveText={{ icon: `Grab ${componentData.label}` }}
+            className="cmp-action-btn bg-white mrs"
             iconCategory="utility"
             iconName="rows"
+            iconVariant="border"
             onClick={handleStartDrag}
+            variant="icon"
           />
           <Button
             assistiveText={{ icon: `Delete ${componentData.label}` }}
+            className="cmp-action-btn bg-white mrs"
             iconCategory="utility"
             iconName="delete"
+            iconVariant="border"
+            variant="icon"
           />
-        </ButtonGroup>
-        <div
-          className="mbs bg-gray pal"
-        >
-          {componentData.label}
+        </div>
+        <div className="bam border-blue">
+          <img src={`./images/${componentData.imageSrc}`} alt={`fake image stencil for ${componentData.label}`} />
         </div>
       </div>
     );
@@ -69,7 +73,7 @@ export function renderComponent(componentData, region, handleKeyDown, handleStar
     const ReactComponent = componentData.component;
     return (
       <div
-        className={classnames("component",
+        className={classnames("component pos-rel",
           {
             "grabbed": componentData.isGrabbed,
           }
@@ -80,19 +84,25 @@ export function renderComponent(componentData, region, handleKeyDown, handleStar
         onKeyDown={handleKeyDown}
         tabIndex="0"
       >
-        <ButtonGroup className="">
+        <div className="pas pos-abs right-0 z-above">
           <Button
             assistiveText={{ icon: `Grab ${componentData.label}` }}
+            className="cmp-action-btn bg-white mrs"
             iconCategory="utility"
             iconName="rows"
+            iconVariant="border"
             onClick={handleStartDrag}
+            variant="icon"
           />
           <Button
             assistiveText={{ icon: `Delete ${componentData.label}` }}
+            className="cmp-action-btn bg-white mrs"
             iconCategory="utility"
             iconName="delete"
+            iconVariant="border"
+            variant="icon"
           />
-        </ButtonGroup>
+        </div>
         <ReactComponent
           addComponent={addComponent}
           children={componentData.children}

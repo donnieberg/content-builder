@@ -115,7 +115,7 @@ class Header extends Component {
     return (
       <header 
         id="header-section" 
-        className="z-above"
+        className="region-focus"
         ref={this.props.headerRef}
         tabIndex="-1"
       >

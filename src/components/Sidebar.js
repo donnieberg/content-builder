@@ -33,7 +33,7 @@ class Sidebar extends Component {
         ref={this.props.sidebarRef}
         tabIndex="-1"
       >
-        <h2 className="mbs slds-text-heading_small">Lightning Components</h2>
+        <h2 className="mbm slds-text-heading_large">Lightning Components</h2>
         <ul>
           {
             ALL_COMPONENTS.map((component, i) => {

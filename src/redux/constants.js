@@ -14,6 +14,7 @@ export const ALL_LABELS = ['Label 1', 'Label 2', 'Label 3'];
 export const ALL_COMPONENTS = [
   {
     id: 'chatter',
+    imageSrc: 'stencil_chatter.png', 
     component: 'chatter',
     label: 'Chatter',
     value: 'chatter',

@@ -17,6 +17,7 @@ import {
 import Canvas from './components/Canvas';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import Properties from './components/Properties';
 
 import './App.css';
 
@@ -309,10 +310,10 @@ class ConnectedApp extends Component {
             canvasRef={this.canvasRef}
           />
           <div id="properties-sidebar" className="pam bg-white bas border-gray" ref={this.propertiesRef} tabIndex="-1">
-            <h2 className="slds-text-heading_small">Properties</h2>
+            <Properties />
           </div>
         </main>
-        <div aria-live="assertive" className="">
+        <div aria-live="assertive" className="pam slds-text-heading_large bg-navy text-white">
           {this.state.assistiveText}
         </div>
       </div>

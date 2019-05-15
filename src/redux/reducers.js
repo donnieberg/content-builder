@@ -29,6 +29,7 @@ const initialState = {
               component: 'chatter',
               label: 'Chatter',
               id: '003',
+              imageSrc: 'stencil_chatter.png',
               value: 'chatter',
             }
           ]
@@ -46,6 +47,7 @@ const initialState = {
               panelIndex: 0,
               component: 'chatter',
               label: 'Chatter',
+              imageSrc: 'stencil_chatter.png',
               value: 'chatter',
             }
           ]
