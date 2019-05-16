@@ -20,7 +20,7 @@ export const ALL_COMPONENTS = [
     value: 'chatter',
     rightIcon: {
       category: 'utility',
-      name: 'tabset'
+      name: 'chat'
     }
   }, {
     id: 'tabs',
@@ -30,7 +30,7 @@ export const ALL_COMPONENTS = [
     value: 'tabs',
     rightIcon: {
       category: 'utility',
-      name: 'layers'
+      name: 'tabset'
     }
   }, {
     id: 'accordion',
@@ -40,7 +40,7 @@ export const ALL_COMPONENTS = [
     value: 'accordion',
     rightIcon: {
       category: 'utility',
-      name: 'chat'
+      name: 'layers'
     }
   }
 ];

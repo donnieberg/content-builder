@@ -187,31 +187,25 @@ class ConnectedApp extends Component {
   }
 
   handleF6 = (event) => {
-    console.log(this.state.currFocusedRegion);
     if (event.key === 'F6') {
       switch(this.state.currFocusedRegion) {
         case null:
-          console.log('focus header');
           this.headerRef.current.focus();
           this.setState({ currFocusedRegion: 'HEADER' })
           break;
         case 'HEADER':
-          console.log('focus comp panel');
           this.sidebarRef.current.focus();
           this.setState({ currFocusedRegion: 'COMPONENT_PANEL' })
           break;
         case 'COMPONENT_PANEL':
-          console.log('focus canvas');
           this.canvasRef.current.focus();
           this.setState({ currFocusedRegion: 'CANVAS' })
           break;
         case 'CANVAS':
-          console.log('focus prop panel');
           this.propertiesRef.current.focus();
           this.setState({ currFocusedRegion: 'PROPERTY_PANEL' })
           break;
         case 'PROPERTY_PANEL':
-          console.log('focus header');
           this.headerRef.current.focus();
           this.setState({ currFocusedRegion: 'HEADER' })
           break;
@@ -297,6 +291,12 @@ class ConnectedApp extends Component {
   render() {
     return (
       <div className="App ht-full dg app-grid bg-gray" onKeyDown={this.handleF6}>
+        { this.state.assistiveText 
+          ? <div aria-live="assertive" className="pam slds-text-heading_large bg-navy text-white">
+            {this.state.assistiveText}
+          </div>
+          : null
+        }
         <Header headerRef={this.headerRef} />
         <main className="dg main-grid dg-stretch">
           <Sidebar handleStartDrag={this.handleStartDrag} sidebarRef={this.sidebarRef} />
@@ -313,9 +313,6 @@ class ConnectedApp extends Component {
             <Properties />
           </div>
         </main>
-        <div aria-live="assertive" className="pam slds-text-heading_large bg-navy text-white">
-          {this.state.assistiveText}
-        </div>
       </div>
     );
   }
