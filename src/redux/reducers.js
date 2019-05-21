@@ -44,6 +44,7 @@ const initialState = {
               panelIndex: 0,
               component: 'chatter',
               label: 'Chatter',
+              id: '004',
               value: 'chatter',
             }
           ]
