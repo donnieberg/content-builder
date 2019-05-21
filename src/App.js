@@ -120,11 +120,14 @@ class ConnectedApp extends Component {
     });
   }
 
-  handleStartDrag(componentType, event = null) {
+  handleStartDrag(componentType, event = null, panelIndex = null) {
     let updatedAllComponents = cloneObject(this.props.canvas);
     let newRegion = 'header';
     let componentToAdd;
     let newComponentIndex = 0;
+    let parentObj;
+
+    console.log('EVENT !!!!!!!!', event)
 
     // can only have one grabbed component at a time - drop currently grabbed thing before grab new one
     if (this.state.grabbedComponent !== null) this.handleDrop();
@@ -135,14 +138,31 @@ class ConnectedApp extends Component {
       const componentHTML = event.target.closest('div.component')
       newRegion = regionHTML.id.substring(8);
 
-      // gets the existing component & index from redux
-      componentToAdd = cloneObject(
-        getObjectbyKey(updatedAllComponents[newRegion].components, 'id', componentHTML.id)
-      );
-      newComponentIndex = updatedAllComponents[newRegion].components.findIndex(cmp => cmp.id === componentHTML.id);
 
-      // removes component from local state and redux state
-      updatedAllComponents[newRegion].components.splice(newComponentIndex, 1);
+      console.log('regionHTML', regionHTML)
+      console.log('componentHTML', componentHTML)
+      console.log('newRegion', newRegion)
+
+      if (panelIndex !== null) {
+        const parentHTML = componentHTML.closest('div.parent-component');
+        parentObj = getObjectbyKey(updatedAllComponents[newRegion].components, 'id', parentHTML.id);
+        componentToAdd = getObjectbyKey(parentObj.children, 'id', componentHTML.id);
+        newComponentIndex = parentObj.children.findIndex(cmp => cmp.id === componentHTML.id);
+        parentObj.children.splice(newComponentIndex, 1);
+
+        console.log('parentObj', parentObj)
+        console.log('COMPONENTTOADD', componentToAdd)
+      } else {
+        // gets the existing component & index from redux
+        componentToAdd = cloneObject(
+          getObjectbyKey(updatedAllComponents[newRegion].components, 'id', componentHTML.id)
+        );
+        newComponentIndex = updatedAllComponents[newRegion].components.findIndex(cmp => cmp.id === componentHTML.id);
+        // removes component from local state and redux state
+        updatedAllComponents[newRegion].components.splice(newComponentIndex, 1);
+      }
+
+
       this.props.updateRegion(newRegion, updatedAllComponents[newRegion]);
     } else {
       // the new grabbed component
@@ -151,10 +171,15 @@ class ConnectedApp extends Component {
       componentToAdd = cloneObject(cmp);
     }
 
+    console.log(
+      'component to add', componentToAdd
+    )
+
     componentToAdd.id = `floating-${componentType}`;
     componentToAdd.isGrabbed = true;
 
-    updatedAllComponents[newRegion].components.splice(newComponentIndex, 0, componentToAdd);
+    if (event !== null) parentObj.children.splice(newComponentIndex, 0, componentToAdd);
+    else updatedAllComponents[newRegion].components.splice(newComponentIndex, 0, componentToAdd);
 
     let updatedAssistiveText = getAssistiveText(
       componentType,
@@ -176,15 +201,20 @@ class ConnectedApp extends Component {
     });
   }
 
-  handleKeyDown(event) {
+  handleKeyDown(event, panelIndex = null) {
     if (event.key === ' ') {
       event.preventDefault();
       if (this.state.grabbedComponent !== null) this.handleDrop(true);
-      else this.handleStartDrag(event.target.getAttribute('data-type'), event);
-    } else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-      this.handleRightLeft(event);
-    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-      this.handleUpDown(event);
+      else this.handleStartDrag(event.target.getAttribute('data-type'), event, panelIndex);
+      event.stopPropagation();
+    }
+
+    if (this.state.isDragDropMode) {
+      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        this.handleRightLeft(event);
+      } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        this.handleUpDown(event);
+      }
     }
   }
 
