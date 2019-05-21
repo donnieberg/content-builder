@@ -2,14 +2,14 @@ import React, { Component, Fragment } from 'react';
 import { Tabs as TabsWrapper, TabsPanel } from '@salesforce/design-system-react';
 
 import AddCompButton from './AddCompButton';
+import CanvasComponent from './CanvasComponent';
 
-import { renderComponent } from '../helpers';
+// import { renderComponent } from '../helpers';
 import { ALL_LABELS } from '../redux/constants';
 
 class Tabs extends Component {
   renderPanel(label, panelIndex) {
     const panelComponents = this.props.children.filter(component => component.panelIndex === panelIndex);
-
     return (
       <TabsPanel
         id={`${this.props.id}-${panelIndex}`}
@@ -27,13 +27,22 @@ class Tabs extends Component {
             /> : <Fragment>
               {
                 panelComponents.map((componentData, i) => (
-                  renderComponent(
-                    componentData,
-                    this.props.region,
-                    this.props.handleKeyDown,
-                    this.props.handleStartDrag,
-                  )
+                  <CanvasComponent
+                    componentData={componentData}
+                    region={this.props.region}
+                    handleKeyDown={this.props.handleKeyDown}
+                    handleStartDrag={this.props.handleStartDrag}
+                    panelIndex={panelIndex}
+                  />
                 ))
+                //   renderComponent(
+                //     componentData,
+                //     this.props.region,
+                //     this.props.handleKeyDown,
+                //     this.props.handleStartDrag,
+                //     panelIndex,
+                //   )
+                // ))
               }
             </Fragment>
         }

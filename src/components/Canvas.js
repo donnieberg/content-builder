@@ -1,42 +1,30 @@
 import React, { Component } from 'react';
-import {
-  Button,
-  Dropdown,
-  DropdownTrigger,
-} from '@salesforce/design-system-react';
 
-import { renderComponent } from '../helpers';
-
-import { ALL_COMPONENTS } from '../redux/constants';
+// import { renderComponent } from '../helpers';
+import CanvasComponent from './CanvasComponent';
+import AddCompButton from './AddCompButton';
 
 class Canvas extends Component {
   renderComponents(region, components) {
     if (components.length === 0) {
       return (
-        <Dropdown
-          align="left"
-          className="wi-full"
-          options={ALL_COMPONENTS}
-          onSelect={(e) => {
-            this.props.addComponent(region, e.value);
-          }}
-        >
-          <DropdownTrigger>
-            <Button label={`Add a Component: ${region} Region`} />
-          </DropdownTrigger>
-        </Dropdown>
+        <AddCompButton
+          addComponent={this.props.addComponent}
+          id={this.props.id}
+          label={`Add a Component: ${region} Region`}
+          region={this.props.region}
+        />
       );
     } else {
       return (
         components.map((componentData) => {
           if (componentData !== undefined || componentData !== null) {
-            return renderComponent(
-              componentData,
-              region,
-              this.props.handleKeyDown,
-              this.props.handleStartDrag,
-              this.props.addComponent
-            )
+            return <CanvasComponent
+              componentData={componentData}
+              region={this.props.region}
+              handleKeyDown={this.props.handleKeyDown}
+              handleStartDrag={this.props.handleStartDrag}
+            />
           }
           return null;
         })

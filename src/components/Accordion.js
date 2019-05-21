@@ -3,7 +3,8 @@ import { Accordion as AccordionWrapper, AccordionPanel } from '@salesforce/desig
 
 import AddCompButton from './AddCompButton';
 
-import { renderComponent } from '../helpers';
+// import { renderComponent } from '../helpers';
+import CanvasComponent from './CanvasComponent';
 import { ALL_LABELS } from '../redux/constants';
 
 class Accordion extends Component {
@@ -48,13 +49,22 @@ class Accordion extends Component {
             /> : <Fragment>
               {
                 panelComponents.map((componentData, i) => (
-                  renderComponent(
-                    componentData,
-                    this.props.region,
-                    this.props.handleKeyDown,
-                    this.props.handleStartDrag,
-                  )
+                  <CanvasComponent
+                    componentData={componentData}
+                    region={this.props.region}
+                    handleKeyDown={this.props.handleKeyDown}
+                    handleStartDrag={this.props.handleStartDrag}
+                    panelIndex={panelIndex}
+                  />
                 ))
+                //   renderComponent(
+                //     componentData,
+                //     this.props.region,
+                //     this.props.handleKeyDown,
+                //     this.props.handleStartDrag,
+                //     panelIndex,
+                //   )
+                // ))
               }
             </Fragment>
         }

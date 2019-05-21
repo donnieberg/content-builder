@@ -14,8 +14,14 @@ class AddCompButton extends Component {
         align="left"
         className="wi-full"
         options={ALL_COMPONENTS}
-        onSelect={(e) => {
-          this.props.addComponent(this.props.region, e.value, 0, this.props.id, this.props.panelIndex);
+        onSelect={(event) => {
+          this.props.addComponent(
+            this.props.region,
+            event.value,
+            0,
+            this.props.id,
+            this.props.panelIndex
+          );
         }}
       >
         <DropdownTrigger>
