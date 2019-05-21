@@ -113,7 +113,12 @@ class Header extends Component {
 
   render() {
     return (
-      <header id="header-section">
+      <header 
+        id="header-section" 
+        className="region-focus"
+        ref={this.props.headerRef}
+        tabIndex="-1"
+      >
         <section className="df df-justify bg-navy">
           <div>
             <span className="pam dib brs border-white text-white">

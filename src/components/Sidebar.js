@@ -6,8 +6,13 @@ import { ALL_COMPONENTS } from '../redux/constants';
 class Sidebar extends Component {
   render() {
     return (
-      <div id="components-sidebar" className="pam bg-white bas border-gray">
-        <h2 className="mbs slds-text-heading_small">Lightning Components</h2>
+      <div 
+        id="components-sidebar" 
+        className="pam bg-white bas border-gray"
+        ref={this.props.sidebarRef}
+        tabIndex="-1"
+      >
+        <h2 className="mbm slds-text-heading_large">Lightning Components</h2>
         <ul>
           {
             ALL_COMPONENTS.map((component, i) => {

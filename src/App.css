@@ -28,6 +28,14 @@
   transform: rotate(1deg);
 }
 
+.cmp-action-btn {
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.60);
+}
+
+.region-focus:focus {
+  outline-offset: -3px;
+}
+
 /*  
  *  ============================================================================= 
  *  SINGLE PURPOSE CLASSES  
@@ -110,11 +118,13 @@ textarea { border: none; }
 /* BORDER WIDTHS & STYLE ============================================================================= */
 .ban { border: none !important; }
 .bas { border-width: 1px; border-style: solid; }
+.bam { border-width: 2px; border-style: solid; }
 .bls { border-left-width: 1px; border-left-style: solid; }
 .brs { border-right-width: 1px; border-right-style: solid; }
 .bts { border-top-width: 1px; border-top-style: solid; }
 .bbs { border-bottom-width: 1px; border-bottom-style: solid; }
 .border-gray { border-color: #dddbda; }
+.border-blue { border-color: #b0c4df; }
 .border-white { border-color: #fff; }
 
 /*

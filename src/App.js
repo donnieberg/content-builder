@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import uniqid from 'uniqid';
 
 import { connect } from 'react-redux';
-import { updateRegion } from './redux/actions';
+import {
+  updateRegion,
+} from './redux/actions';
 import { ALL_COMPONENTS } from './redux/constants';
 
 import {
@@ -15,6 +17,7 @@ import {
 import Canvas from './components/Canvas';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import Properties from './components/Properties';
 
 import './App.css';
 
@@ -22,12 +25,13 @@ const mapStateToProps = state => {
   return {
     canvas: state.canvas,
     canvasRegions: state.canvasRegions,
+    regions: state.regions
   };
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    updateRegion: (region, regionData) => dispatch(updateRegion(region, regionData)),
+    updateRegion: (region, regionData) => dispatch(updateRegion(region, regionData))
   };
 }
 
@@ -40,6 +44,7 @@ class ConnectedApp extends Component {
       allComponents: initAllComponents,
       assistiveText: '',
       currFocusedElement: null,
+      currFocusedRegion: null,
       grabbedComponent: null,
       grabbedComponentCurrRegion: 'header',
       grabbedComponentIndex: 0,
@@ -50,6 +55,11 @@ class ConnectedApp extends Component {
     this.addComponent = this.addComponent.bind(this);
     this.handleStartDrag = this.handleStartDrag.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+
+    this.headerRef = React.createRef();
+    this.sidebarRef = React.createRef();
+    this.canvasRef = React.createRef();
+    this.propertiesRef = React.createRef();
   }
 
   componentDidUpdate() {
@@ -218,6 +228,47 @@ class ConnectedApp extends Component {
     }
   }
 
+  handleF6 = (event) => {
+    if (event.key === 'F6') {
+      switch (this.state.currFocusedRegion) {
+        case null:
+          this.headerRef.current.focus();
+          this.setState({ currFocusedRegion: 'HEADER' })
+          break;
+        case 'HEADER':
+          this.sidebarRef.current.focus();
+          this.setState({ currFocusedRegion: 'COMPONENT_PANEL' })
+          break;
+        case 'COMPONENT_PANEL':
+          this.canvasRef.current.focus();
+          this.setState({ currFocusedRegion: 'CANVAS' })
+          break;
+        case 'CANVAS':
+          this.propertiesRef.current.focus();
+          this.setState({ currFocusedRegion: 'PROPERTY_PANEL' })
+          break;
+        case 'PROPERTY_PANEL':
+          this.headerRef.current.focus();
+          this.setState({ currFocusedRegion: 'HEADER' })
+          break;
+        default:
+          console.log('error');
+      }
+    }
+  }
+
+  // handleKeyDown(event) {
+  //   if (event.key === ' ') {
+  //     event.preventDefault();
+  //     if (this.state.grabbedComponent !== null) this.handleDrop(true);
+  //     else this.handleStartDrag(event.target.getAttribute('data-type'), event);
+  //   } else if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+  //     this.handleRightLeft(event);
+  //   } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+  //     this.handleUpDown(event);
+  //   } 
+  // }
+
   handleUpDown(event) {
     event.preventDefault();
     let updatedAllComponents = cloneObject(this.props.canvas);
@@ -281,10 +332,16 @@ class ConnectedApp extends Component {
 
   render() {
     return (
-      <div className="App ht-full dg app-grid bg-gray">
-        <Header />
+      <div className="App ht-full dg app-grid bg-gray" onKeyDown={this.handleF6}>
+        {this.state.assistiveText
+          ? <div aria-live="assertive" className="pam slds-text-heading_large bg-navy text-white">
+            {this.state.assistiveText}
+          </div>
+          : null
+        }
+        <Header headerRef={this.headerRef} />
         <main className="dg main-grid dg-stretch">
-          <Sidebar handleStartDrag={this.handleStartDrag} />
+          <Sidebar handleStartDrag={this.handleStartDrag} sidebarRef={this.sidebarRef} />
           <Canvas
             data={this.state.allComponents}
             addComponent={this.addComponent}
@@ -292,14 +349,12 @@ class ConnectedApp extends Component {
             handleKeyDown={this.handleKeyDown}
             canvasRegions={this.props.canvasRegions}
             handleStartDrag={this.handleStartDrag}
+            canvasRef={this.canvasRef}
           />
-          <div id="properties-sidebar" className="pam bg-white bas border-gray">
-            <h2 className="slds-text-heading_small">Properties</h2>
+          <div id="properties-sidebar" className="pam bg-white bas border-gray" ref={this.propertiesRef} tabIndex="-1">
+            <Properties />
           </div>
         </main>
-        <div aria-live="assertive" className="">
-          {this.state.assistiveText}
-        </div>
       </div>
     );
   }

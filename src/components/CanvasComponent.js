@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
-import { Button, ButtonGroup } from '@salesforce/design-system-react';
+import { Button } from '@salesforce/design-system-react';
 
 class CanvasComponent extends Component {
   renderStaticComponent() {
     return (
       <div
-        className={classnames("component",
+        className={classnames("component pos-rel",
           {
             "grabbed": this.props.componentData.isGrabbed,
           }
@@ -19,25 +19,30 @@ class CanvasComponent extends Component {
         }}
         data-type={this.props.componentData.value}
       >
-        <ButtonGroup className="">
+        <div className="pas pos-abs right-0 z-above">
           <Button
             assistiveText={{ icon: `Grab ${this.props.componentData.label}` }}
+            className="cmp-action-btn bg-white mrs"
             iconCategory="utility"
             iconName="rows"
-            onClick={(event) => {
-              this.props.handleStartDrag(this.props.componentData.value, event, this.props.panelIndex);
-            }}
+            iconVariant="border"
+            onClick={this.props.handleStartDrag}
+            variant="icon"
           />
           <Button
             assistiveText={{ icon: `Delete ${this.props.componentData.label}` }}
+            className="cmp-action-btn bg-white mrs"
             iconCategory="utility"
             iconName="delete"
+            iconVariant="border"
+            variant="icon"
           />
-        </ButtonGroup>
-        <div
-          className="mbs bg-gray pal"
-        >
-          {this.props.componentData.label}
+        </div>
+        <div className="bam border-blue">
+          <img
+            src={`./images/${this.props.componentData.imageSrc}`}
+            alt={`placeholder stencil for ${this.props.componentData.label}`}
+          />
         </div>
       </div>
     );
@@ -47,7 +52,7 @@ class CanvasComponent extends Component {
     const ReactComponent = this.props.componentData.component;
     return (
       <div
-        className={classnames("component", "parent-component",
+        className={classnames("component pos-rel", "parent-component",
           {
             "grabbed": this.props.componentData.isGrabbed,
           }
@@ -60,21 +65,25 @@ class CanvasComponent extends Component {
         }}
         tabIndex="0"
       >
-        <ButtonGroup className="">
+        <div className="pas pos-abs right-0 z-above">
           <Button
             assistiveText={{ icon: `Grab ${this.props.componentData.label}` }}
+            className="cmp-action-btn bg-white mrs"
             iconCategory="utility"
             iconName="rows"
-            onClick={(event) => {
-              this.props.shandleStartDrag(this.props.componentData.value, event, this.props.panelIndex);
-            }}
+            iconVariant="border"
+            onClick={this.props.handleStartDrag}
+            variant="icon"
           />
           <Button
             assistiveText={{ icon: `Delete ${this.props.componentData.label}` }}
+            className="cmp-action-btn bg-white mrs"
             iconCategory="utility"
             iconName="delete"
+            iconVariant="border"
+            variant="icon"
           />
-        </ButtonGroup>
+        </div>
         <ReactComponent
           addComponent={this.props.addComponent}
           children={this.props.componentData.children}
