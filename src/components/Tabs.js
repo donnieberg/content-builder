@@ -4,7 +4,6 @@ import { Tabs as TabsWrapper, TabsPanel } from '@salesforce/design-system-react'
 import AddCompButton from './AddCompButton';
 import CanvasComponent from './CanvasComponent';
 
-// import { renderComponent } from '../helpers';
 import { ALL_LABELS } from '../redux/constants';
 
 class Tabs extends Component {
@@ -35,14 +34,6 @@ class Tabs extends Component {
                     panelIndex={panelIndex}
                   />
                 ))
-                //   renderComponent(
-                //     componentData,
-                //     this.props.region,
-                //     this.props.handleKeyDown,
-                //     this.props.handleStartDrag,
-                //     panelIndex,
-                //   )
-                // ))
               }
             </Fragment>
         }

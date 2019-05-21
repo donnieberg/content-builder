@@ -2,9 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { Accordion as AccordionWrapper, AccordionPanel } from '@salesforce/design-system-react';
 
 import AddCompButton from './AddCompButton';
-
-// import { renderComponent } from '../helpers';
 import CanvasComponent from './CanvasComponent';
+
 import { ALL_LABELS } from '../redux/constants';
 
 class Accordion extends Component {
@@ -57,14 +56,6 @@ class Accordion extends Component {
                     panelIndex={panelIndex}
                   />
                 ))
-                //   renderComponent(
-                //     componentData,
-                //     this.props.region,
-                //     this.props.handleKeyDown,
-                //     this.props.handleStartDrag,
-                //     panelIndex,
-                //   )
-                // ))
               }
             </Fragment>
         }
