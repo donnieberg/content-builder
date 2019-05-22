@@ -104,6 +104,13 @@ class ConnectedApp extends Component {
       this.state.grabbedComponentIndex,
     );
 
+    // not sure if this is the right if condition
+    if (this.state.grabbedComponent.panelIndex !== null) {
+      // find new panel index
+    } else {
+      // handle normally
+    }
+
     // removes existing grabbed component from updatedAllComponents
     let updatingRegion = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
     let prevGrabbedComponentIndex = updatingRegion.findIndex(el => el.isGrabbed === true);
@@ -188,7 +195,7 @@ class ConnectedApp extends Component {
     componentToAdd.id = `floating-${componentType}`;
     componentToAdd.isGrabbed = true;
 
-    if (event !== null) parentObj.children.splice(newComponentIndex, 0, componentToAdd);
+    if (event.target.classList.contains('child-component')) parentObj.children.splice(newComponentIndex, 0, componentToAdd);
     else updatedAllComponents[newRegion].components.splice(newComponentIndex, 0, componentToAdd);
 
     let updatedAssistiveText = getAssistiveText(

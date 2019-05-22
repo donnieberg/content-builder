@@ -6,7 +6,7 @@ class CanvasComponent extends Component {
   renderStaticComponent() {
     return (
       <div
-        className={classnames("component pos-rel",
+        className={classnames("component pos-rel", this.props.className,
           {
             "grabbed": this.props.componentData.isGrabbed,
           }

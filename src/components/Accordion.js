@@ -49,6 +49,7 @@ class Accordion extends Component {
               {
                 panelComponents.map((componentData, i) => (
                   <CanvasComponent
+                    className="child-component"
                     componentData={componentData}
                     region={this.props.region}
                     handleKeyDown={this.props.handleKeyDown}
