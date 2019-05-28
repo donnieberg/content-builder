@@ -6,8 +6,8 @@ import { ALL_COMPONENTS } from '../redux/constants';
 class Sidebar extends Component {
   render() {
     return (
-      <div 
-        id="components-sidebar" 
+      <div
+        id="components-sidebar"
         className="pam bg-white bas border-gray"
         ref={this.props.sidebarRef}
         tabIndex="-1"

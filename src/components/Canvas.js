@@ -9,10 +9,10 @@ class Canvas extends Component {
     if (components.length === 0) {
       return (
         <AddCompButton
-          addComponent={this.props.addComponent}
           id={this.props.id}
           label={`Add a Component: ${region} Region`}
-          region={this.props.region}
+          region={region}
+          handleStartDrag={this.props.handleStartDrag}
         />
       );
     } else {
@@ -21,7 +21,7 @@ class Canvas extends Component {
           if (componentData !== undefined || componentData !== null) {
             return <CanvasComponent
               componentData={componentData}
-              region={this.props.region}
+              region={region}
               handleKeyDown={this.props.handleKeyDown}
               handleStartDrag={this.props.handleStartDrag}
             />
@@ -34,8 +34,8 @@ class Canvas extends Component {
 
   render() {
     return (
-      <div 
-        id="main-builder" 
+      <div
+        id="main-builder"
         className="maxs mbn pam pbn bg-blue dg builder-grid dg-stretch"
         ref={this.props.canvasRef}
         tabIndex="-1"

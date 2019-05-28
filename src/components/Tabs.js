@@ -18,11 +18,12 @@ class Tabs extends Component {
         {
           panelComponents.length === 0 ?
             <AddCompButton
-              addComponent={this.props.addComponent}
+              handleStartDrag={this.props.handleStartDrag}
               id={this.props.id}
               label={`Add a Component: Tabs Panel ${panelIndex + 1}`}
               panelIndex={panelIndex}
               region={this.props.region}
+              parentId={this.props.id}
             /> : <Fragment>
               {
                 panelComponents.map((componentData, i) => (
@@ -33,6 +34,7 @@ class Tabs extends Component {
                     handleKeyDown={this.props.handleKeyDown}
                     handleStartDrag={this.props.handleStartDrag}
                     panelIndex={panelIndex}
+                    parentId={this.props.id}
                   />
                 ))
               }

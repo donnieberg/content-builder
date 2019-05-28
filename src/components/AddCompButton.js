@@ -15,12 +15,12 @@ class AddCompButton extends Component {
         className="wi-full"
         options={ALL_COMPONENTS}
         onSelect={(event) => {
-          this.props.addComponent(
-            this.props.region,
+          this.props.handleStartDrag(
             event.value,
-            0,
-            this.props.id,
-            this.props.panelIndex
+            null,
+            this.props.panelIndex,
+            this.props.region,
+            this.props.parentId,
           );
         }}
       >

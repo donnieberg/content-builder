@@ -18,6 +18,7 @@ class CanvasComponent extends Component {
           this.props.handleKeyDown(event, this.props.panelIndex)
         }}
         data-type={this.props.componentData.value}
+        data-parentId={this.props.parentId}
       >
         <div className="pas pos-abs right-0 z-above">
           <Button
