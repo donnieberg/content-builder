@@ -104,17 +104,17 @@ class ConnectedApp extends Component {
       this.state.grabbedComponentIndex,
     );
 
+    let updatingRegion = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
+    let prevGrabbedComponentIndex;
+
     // not sure if this is the right if condition
     if (this.state.grabbedComponent.panelIndex !== null) {
       // find new panel index
     } else {
-      // handle normally
+      // removes existing grabbed component from updatedAllComponents
+      prevGrabbedComponentIndex = updatingRegion.findIndex(el => el.isGrabbed === true);
+      updatingRegion.splice(prevGrabbedComponentIndex, 1);
     }
-
-    // removes existing grabbed component from updatedAllComponents
-    let updatingRegion = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
-    let prevGrabbedComponentIndex = updatingRegion.findIndex(el => el.isGrabbed === true);
-    updatingRegion.splice(prevGrabbedComponentIndex, 1);
 
     let updatedAssistiveText = getAssistiveText(
       this.state.grabbedComponentType,
