@@ -333,6 +333,7 @@ class ConnectedApp extends Component {
   }
 
   handleRightLeft(event) {
+    console.log(event.target)
     event.preventDefault();
     let updatedAllComponents = cloneObject(this.props.canvas);
     const oldRegionName = `builder-${this.state.grabbedComponentCurrRegion}`;
@@ -348,7 +349,25 @@ class ConnectedApp extends Component {
     let updatedNewRegionData = updatedAllComponents[newRegionName].components;
 
     // take grabbed out of old region
-    updatedOldRegionData.splice(this.state.grabbedComponentIndex, 1);
+    if (this.state.grabbedComponent.panelIndex === undefined) {
+      updatedOldRegionData.splice(this.state.grabbedComponentIndex, 1);
+    } else {
+      let parentComp = getObjectbyKey(
+        updatedOldRegionData,
+        'id',
+        this.state.grabbedComponent.parentId
+      );
+      let index = parentComp.children.findIndex(el => el.id === this.state.grabbedComponent.id);
+      parentComp.children.splice(index, 1);
+
+      // removes panelindex/parent data from grabbedComponent
+      let tmp = cloneObject(this.state.grabbedComponent);
+      tmp.panelIndex = undefined;
+      tmp.parentId = undefined;
+      this.setState({ grabbedComponent: tmp });
+    }
+
+    console.log('updatedAllComponents', updatedAllComponents)
     // add grabbed to top of new region
     updatedNewRegionData.splice(0, 0, this.state.grabbedComponent);
 
