@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import uniqid from 'uniqid';
+import uniqBy from 'lodash.uniqby';
 
 import { connect } from 'react-redux';
 import {
@@ -63,6 +64,7 @@ class ConnectedApp extends Component {
   }
 
   componentDidUpdate() {
+    console.log('APP.JS DIDUPDATE BABYYYY', this.props.canvas)
     if (this.state.currFocusedElement !== null) {
       document.getElementById(this.state.currFocusedElement).focus();
     }
@@ -219,7 +221,7 @@ class ConnectedApp extends Component {
     // Case 5: Move component within another component
     else if (event !== null && panelIndex !== null) {
       const componentHTML = event.target.closest('div.component');
-      const parentId = event.target.getAttribute('data-parentId');
+      const parentId = event.target.getAttribute('data-parentid');
       region = event.target.closest('section').id.substring(8);
 
       // parentObj = the object in local state that the component is currently in
@@ -249,6 +251,8 @@ class ConnectedApp extends Component {
       'grabbed'
     );
 
+    console.log('componentToAdd handleStartDrag', updatedAllComponents)
+
     this.setState({
       allComponents: updatedAllComponents,
       assistiveText: updatedAssistiveText,
@@ -269,8 +273,11 @@ class ConnectedApp extends Component {
       event.stopPropagation();
     }
 
+    console.log('handleKeyDown: all components', this.state.allComponents)
+
     if (this.state.isDragDropMode) {
       if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        console.log('handleKeyDown: does this run twice?')
         this.handleRightLeft(event);
       } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
         this.handleUpDown(event);
@@ -333,9 +340,12 @@ class ConnectedApp extends Component {
   }
 
   handleRightLeft(event) {
-    console.log(event.target)
+    console.log('handleRightLeft: event target', event.target)
+    // console.log('handleRightLeft: event target parent', event.target.parentNode)
+    console.log('handleRightLeft: all components local state', this.state.allComponents)
     event.preventDefault();
-    let updatedAllComponents = cloneObject(this.props.canvas);
+    let updatedAllComponents = cloneObject(this.state.allComponents);
+    console.log('handleRightLeft: updatedAllComponents init', updatedAllComponents)
     const oldRegionName = `builder-${this.state.grabbedComponentCurrRegion}`;
     let newRegionIndex = getNewIndex(
       this.props.canvasRegions,
@@ -347,6 +357,7 @@ class ConnectedApp extends Component {
     const newRegionName = this.props.canvasRegions[newRegionIndex].substring(8);
     let updatedOldRegionData = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
     let updatedNewRegionData = updatedAllComponents[newRegionName].components;
+    console.log('handleRightLeft: updatedNewRegionData', updatedNewRegionData)
 
     // take grabbed out of old region
     if (this.state.grabbedComponent.panelIndex === undefined) {
@@ -367,7 +378,8 @@ class ConnectedApp extends Component {
       this.setState({ grabbedComponent: tmp });
     }
 
-    console.log('updatedAllComponents', updatedAllComponents)
+    // updatedAllComponents[newRegionName].components = uniqBy(updatedAllComponents[newRegionName].components, 'id');
+    console.log('handleRightLeft: updatedAllComponents end', updatedAllComponents)
     // add grabbed to top of new region
     updatedNewRegionData.splice(0, 0, this.state.grabbedComponent);
 
