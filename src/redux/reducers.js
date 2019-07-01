@@ -50,6 +50,13 @@ const initialState = {
               id: '004',
               imageSrc: 'stencil_chatter.png',
               value: 'chatter',
+            }, {
+              panelIndex: 0,
+              component: 'chatter',
+              label: 'Chatter',
+              id: '005',
+              imageSrc: 'stencil_chatter.png',
+              value: 'chatter',
             }
           ]
         }
