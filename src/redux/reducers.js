@@ -39,6 +39,12 @@ const initialState = {
     main: {
       components: [
         {
+          component: 'form',
+          label: 'Form',
+          id: '008',
+          imageSrc: 'stencil_inputs.png',
+          value: 'form',
+        }, {
           component: Tabs,
           id: '002',
           value: 'tabs',
@@ -51,14 +57,27 @@ const initialState = {
               imageSrc: 'stencil_chatter.png',
               value: 'chatter',
             }, {
-              panelIndex: 0,
+              panelIndex: 1,
               component: 'chatter',
               label: 'Chatter',
-              id: '005',
+              id: '006',
               imageSrc: 'stencil_chatter.png',
               value: 'chatter',
+            }, {
+              panelIndex: 0,
+              component: 'fields',
+              label: 'Form Fields',
+              id: '005',
+              imageSrc: 'stencil_formFields.png',
+              value: 'fields',
             }
           ]
+        }, {
+          component: 'form',
+          label: 'Form',
+          id: '007',
+          imageSrc: 'stencil_inputs.png',
+          value: 'form',
         }
       ],
     },
