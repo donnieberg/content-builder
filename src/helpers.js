@@ -2,7 +2,15 @@ export function cloneObject(obj) {
   return Object.assign({}, obj);
 }
 
-export function getAssistiveText(cmpType, region, index, numCmpsInRegion, action) {
+export function getAssistiveText(cmpType, region, index, numCmpsInRegion, action, parentType, panelIndex) {
+  if (parentType) {
+    return (`
+      ${cmpType} ${action}, 
+      in ${parentType} panel ${panelIndex + 1}, ${region}.
+      Currently ${index + 1} of ${numCmpsInRegion}.
+    `);
+  }
+
   return (`
     ${cmpType} ${action}, 
     in ${region}. 
