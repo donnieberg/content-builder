@@ -4,8 +4,6 @@ import { Accordion as AccordionWrapper, AccordionPanel } from '@salesforce/desig
 import AddCompButton from './AddCompButton';
 import CanvasComponent from './CanvasComponent';
 
-import { ALL_LABELS } from '../redux/constants';
-
 class Accordion extends Component {
   constructor(props) {
     super(props);
@@ -25,37 +23,35 @@ class Accordion extends Component {
     }));
   }
 
-  renderPanel(label, panelIndex) {
-    const panelComponents = this.props.children.filter(component => component.panelIndex === panelIndex);
-
+  renderPanel(panel) {
     return (
       <AccordionPanel
-        expanded={!!this.state.expandedPanels[`${this.props.id}-${panelIndex}`]}
-        id={`${this.props.id}-${panelIndex}`}
-        key={`${this.props.id}-${panelIndex}`}
-        label={label}
-        onTogglePanel={(event) => this.togglePanel(event, `${this.props.id}-${panelIndex}`)}
-        summary={label}
+        expanded={!!this.state.expandedPanels[`${this.props.id}-${panel.index}`]}
+        id={`${this.props.id}-${panel.index}`}
+        key={`${this.props.id}-${panel.index}`}
+        label={panel.name}
+        onTogglePanel={(event) => this.togglePanel(event, `${this.props.id}-${panel.index}`)}
+        summary={panel.name}
       >
         {
-          panelComponents.length === 0 ?
+          panel.components.length === 0 ?
             <AddCompButton
               handleStartDrag={this.props.handleStartDrag}
               id={this.props.id}
-              label={`Add a Component: Accordion Panel ${panelIndex + 1}`}
-              panelIndex={panelIndex}
+              label={`Add a Component: ${panel.name}`}
+              panelIndex={panel.index}
               region={this.props.region}
               parentId={this.props.id}
             /> : <Fragment>
               {
-                panelComponents.map((componentData, i) => (
+                panel.components.map((componentData, i) => (
                   <CanvasComponent
                     className="child-component"
                     componentData={componentData}
                     region={this.props.region}
                     handleKeyDown={this.props.handleKeyDown}
                     handleStartDrag={this.props.handleStartDrag}
-                    panelIndex={panelIndex}
+                    panelIndex={panel.index}
                     parentId={this.props.id}
                   />
                 ))
@@ -70,7 +66,7 @@ class Accordion extends Component {
   render() {
     return (
       <AccordionWrapper id={this.props.id} className={`white-bkgd ${this.props.className}`}>
-        {ALL_LABELS.map((label, i) => this.renderPanel(label, i))}
+        {this.props.panels.map((panel) => this.renderPanel(panel))}
       </AccordionWrapper>
     );
   }

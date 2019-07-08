@@ -14,7 +14,7 @@ export const ALL_LABELS = ['Label 1', 'Label 2', 'Label 3'];
 export const ALL_COMPONENTS = [
   {
     id: 'chatter',
-    imageSrc: 'stencil_chatter.png', 
+    imageSrc: 'stencil_chatter.png',
     component: 'chatter',
     label: 'Chatter',
     value: 'chatter',
@@ -25,7 +25,21 @@ export const ALL_COMPONENTS = [
   }, {
     id: 'tabs',
     component: Tabs,
-    children: [],
+    panels: [
+      {
+        index: 0,
+        name: 'Label 1',
+        components: []
+      }, {
+        index: 1,
+        name: 'Label 2',
+        components: []
+      }, {
+        index: 2,
+        name: 'Label 3',
+        components: []
+      },
+    ],
     label: 'Tabs',
     value: 'tabs',
     rightIcon: {
@@ -35,7 +49,21 @@ export const ALL_COMPONENTS = [
   }, {
     id: 'accordion',
     component: Accordion,
-    children: [],
+    panels: [
+      {
+        index: 0,
+        name: 'Label 1',
+        components: [],
+      }, {
+        index: 1,
+        name: 'Label 2',
+        components: [],
+      }, {
+        index: 2,
+        name: 'Label 3',
+        components: [],
+      },
+    ],
     label: 'Accordion',
     value: 'accordion',
     rightIcon: {

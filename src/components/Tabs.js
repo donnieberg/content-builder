@@ -4,36 +4,33 @@ import { Tabs as TabsWrapper, TabsPanel } from '@salesforce/design-system-react'
 import AddCompButton from './AddCompButton';
 import CanvasComponent from './CanvasComponent';
 
-import { ALL_LABELS } from '../redux/constants';
-
 class Tabs extends Component {
-  renderPanel(label, panelIndex) {
-    const panelComponents = this.props.children.filter(component => component.panelIndex === panelIndex);
+  renderPanel(panel) {
     return (
       <TabsPanel
-        id={`${this.props.id}-${panelIndex}`}
-        key={`${this.props.id}-${panelIndex}`}
-        label={label}
+        id={`${this.props.id}-${panel.index}`}
+        key={`${this.props.id}-${panel.index}`}
+        label={panel.name}
       >
         {
-          panelComponents.length === 0 ?
+          panel.components.length === 0 ?
             <AddCompButton
               handleStartDrag={this.props.handleStartDrag}
               id={this.props.id}
-              label={`Add a Component: Tabs Panel ${panelIndex + 1}`}
-              panelIndex={panelIndex}
+              label={`Add a Component: ${panel.name}`}
+              panelIndex={panel.index}
               region={this.props.region}
               parentId={this.props.id}
             /> : <Fragment>
               {
-                panelComponents.map((componentData, i) => (
+                panel.components.map((componentData, i) => (
                   <CanvasComponent
                     className="child-component"
                     componentData={componentData}
                     region={this.props.region}
                     handleKeyDown={this.props.handleKeyDown}
                     handleStartDrag={this.props.handleStartDrag}
-                    panelIndex={panelIndex}
+                    panelIndex={panel.index}
                     parentId={this.props.id}
                   />
                 ))
@@ -47,7 +44,7 @@ class Tabs extends Component {
   render() {
     return (
       <TabsWrapper className={this.props.className}>
-        {ALL_LABELS.map((label, i) => this.renderPanel(label, i))}
+        {this.props.panels.map((panel) => this.renderPanel(panel))}
       </TabsWrapper>
     );
   }

@@ -19,7 +19,7 @@ class CanvasComponent extends Component {
     return (
       <ReactComponent
         addComponent={this.props.addComponent}
-        children={this.props.componentData.children}
+        panels={this.props.componentData.panels}
         className="mbs"
         handleKeyDown={this.props.handleKeyDown}
         handleStartDrag={this.props.handleStartDrag}
