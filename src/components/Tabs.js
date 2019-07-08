@@ -32,6 +32,7 @@ class Tabs extends Component {
                     handleStartDrag={this.props.handleStartDrag}
                     panelIndex={panel.index}
                     parentId={this.props.id}
+                    key={`tcomp-${componentData.id}`}
                   />
                 ))
               }

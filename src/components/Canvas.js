@@ -17,9 +17,10 @@ class Canvas extends Component {
       );
     } else {
       return (
-        components.map((componentData) => {
+        components.map((componentData, i) => {
           if (componentData !== undefined || componentData !== null) {
             return <CanvasComponent
+              key={`ccomp-${componentData.id}`}
               componentData={componentData}
               region={region}
               handleKeyDown={this.props.handleKeyDown}
