@@ -344,30 +344,46 @@ class ConnectedApp extends Component {
     console.log(this.state.grabbedComponent.panelIndex);
     let updatedAllComponents = cloneObject(this.props.canvas);
     let updatedRegion = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
+    let oldIndex;
+    let newIndex;
+    let updatedAssistiveText;
+
 
     if (this.state.grabbedComponent.panelIndex === undefined) {
-      const oldIndex = this.state.grabbedComponentIndex;
-      let newIndex = getNewIndex(updatedRegion, oldIndex, event.key === 'ArrowDown' ? 'add' : 'sub');
+      oldIndex = this.state.grabbedComponentIndex;
+      newIndex = getNewIndex(updatedRegion, oldIndex, event.key === 'ArrowDown' ? 'add' : 'sub');
 
       updatedRegion.splice(newIndex, 0, updatedRegion.splice(oldIndex, 1)[0]);
       updatedAllComponents[this.state.grabbedComponentCurrRegion].component = updatedRegion;
 
-      let updatedAssistiveText = getAssistiveText(
+      updatedAssistiveText = getAssistiveText(
         this.state.grabbedComponentType,
         this.state.grabbedComponentCurrRegion,
         newIndex,
         updatedRegion.length,
-        'grabbed'
+        'moved'
       );
-
-      this.setState({
-        allComponents: updatedAllComponents,
-        assistiveText: updatedAssistiveText,
-        grabbedComponentIndex: newIndex,
-      });
     } else {
+      console.log(this.state.grabbedComponent)
+      let parentObj = getObjectbyKey(updatedRegion, 'id', this.state.grabbedComponent.parentId);
+      // console.log(parentObj.children)
 
+      let panelCmps = parentObj.children.filter(component => component.panelIndex === this.state.grabbedComponent.panelIndex);
+
+      let nextObj = panelCmps[(panelCmps.findIndex(cmp => cmp.id === this.state.grabbedComponent.id)) + 1];
+      console.log('nextObj', nextObj)
+
+
+      // oldIndex = parentObj.children.findIndex(cmp => cmp.id)
+      // oldIndex = this.props.children.filter(component => component.panelIndex === this.state.grabbedComponent.panelIndex);
+      // console.log(oldIndex)
     }
+
+    // this.setState({
+    //   allComponents: updatedAllComponents,
+    //   assistiveText: updatedAssistiveText,
+    //   grabbedComponentIndex: newIndex,
+    // });
   }
 
   handleRightLeft(event) {
