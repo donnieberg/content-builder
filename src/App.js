@@ -257,13 +257,7 @@ class ConnectedApp extends Component {
     let currentComponentIndex;
     let region;
     let newIndex;
-    // let assistiveText;
-    // cases
-    //  * normal move within region
-    //  * move into panel
-    //  * move within panel
-    //  * move to next panel
-    //  * move out of panel
+    let assistiveText;
 
     if (event.key === 'ArrowDown') {
       if (event.target.hasAttribute('data-panelindex')) {
@@ -280,11 +274,26 @@ class ConnectedApp extends Component {
         if (currentComponentIndex < region.length - 1) {
           newIndex = currentComponentIndex + 1;
           region.splice(newIndex, 0, region.splice(currentComponentIndex, 1)[0]);
+          // (cmpType, region, index, numCmpsInRegion, action, parentType = null, panelName = null) {
+          assistiveText = getAssistiveText(
+            grabbedComponent.value,
+            parentObject.value,
+            newIndex,
+            region.length,
+            'moved',
+          );
         } else {
           if (panelIndex < parentObject.panels.length - 1) {
             // TD: component moves to new panel, but it doesn't open.
             parentObject.panels[panelIndex + 1].components.splice(
               0, 0, region.splice(currentComponentIndex, 1)[0]
+            );
+            assistiveText = getAssistiveText(
+              grabbedComponent.value,
+              parentObject.value,
+              newIndex,
+              region.length,
+              'moved',
             );
           } else {
             const newRegion = allComponents[this.state.grabbedComponentCurrRegion].components;
@@ -292,9 +301,17 @@ class ConnectedApp extends Component {
               cmp.id === parentObject.id
             ));
             newRegion.splice(parentIndex + 1, 0, region.splice(currentComponentIndex, 1)[0]);
+            assistiveText = getAssistiveText(
+              grabbedComponent.value,
+              this.state.grabbedComponentCurrRegion,
+              parentIndex + 1,
+              newRegion.length,
+              'moved',
+            );
           }
         }
         this.setState({
+          assistiveText,
           allComponents,
         });
       } else {
@@ -310,7 +327,17 @@ class ConnectedApp extends Component {
           } else {
             region[newIndex].panels[0].components.splice(0, 0, region.splice(currentComponentIndex, 1)[0]);
           }
+
+          assistiveText = getAssistiveText(
+            grabbedComponent.value,
+            this.state.grabbedComponentCurrRegion,
+            newIndex,
+            region.length,
+            'moved',
+          );
+
           this.setState({
+            assistiveText,
             allComponents,
           });
         }
@@ -327,14 +354,28 @@ class ConnectedApp extends Component {
         region = parentObject.panels[panelIndex].components;
         currentComponentIndex = region.findIndex((cmp) => cmp.id === grabbedComponent.id);
 
-        if (currentComponentIndex < 0) {
+        if (currentComponentIndex > 0) {
           newIndex = currentComponentIndex - 1;
           region.splice(newIndex, 0, region.splice(currentComponentIndex, 1)[0]);
+          assistiveText = getAssistiveText(
+            grabbedComponent.value,
+            parentObject.value,
+            newIndex,
+            region.length,
+            'moved',
+          );
         } else {
-          if (panelIndex < 0) {
+          if (panelIndex > 0) {
             // TD: component moves to new panel, but it doesn't open.
             parentObject.panels[panelIndex - 1].components.splice(
               0, 0, region.splice(currentComponentIndex, 1)[0]
+            );
+            assistiveText = getAssistiveText(
+              grabbedComponent.value,
+              parentObject.value,
+              newIndex,
+              region.length,
+              'moved',
             );
           } else {
             const newRegion = allComponents[this.state.grabbedComponentCurrRegion].components;
@@ -342,9 +383,17 @@ class ConnectedApp extends Component {
               cmp.id === parentObject.id
             ));
             newRegion.splice(parentIndex - 1, 0, region.splice(currentComponentIndex, 1)[0]);
+            assistiveText = getAssistiveText(
+              grabbedComponent.value,
+              this.state.grabbedComponentCurrRegion,
+              parentIndex - 1,
+              newRegion.length,
+              'moved',
+            );
           }
         }
         this.setState({
+          assistiveText,
           allComponents,
         });
       } else {
@@ -353,14 +402,27 @@ class ConnectedApp extends Component {
           cmp.id === grabbedComponent.id
         ));
 
-        if (currentComponentIndex < region.length - 1) {
-          newIndex = currentComponentIndex + 1;
+        if (currentComponentIndex > 0) {
+          newIndex = currentComponentIndex - 1;
           if (region[newIndex].panels === undefined) {
             region.splice(newIndex, 0, region.splice(currentComponentIndex, 1)[0]);
           } else {
-            region[newIndex].panels[0].components.splice(0, 0, region.splice(currentComponentIndex, 1)[0]);
+            let newPanel = region[newIndex].panels[region[newIndex].panels.length - 1];
+            newPanel.components.splice(
+              0, 0, region.splice(currentComponentIndex, 1)[0]
+            );
           }
+
+          assistiveText = getAssistiveText(
+            grabbedComponent.value,
+            this.state.grabbedComponentCurrRegion,
+            newIndex,
+            region.length,
+            'moved',
+          );
+
           this.setState({
+            assistiveText,
             allComponents,
           });
         }
