@@ -280,33 +280,23 @@ class ConnectedApp extends Component {
         if (currentComponentIndex < region.length - 1) {
           newIndex = currentComponentIndex + 1;
           region.splice(newIndex, 0, region.splice(currentComponentIndex, 1)[0]);
-
-          this.setState({
-            allComponents,
-          });
         } else {
           if (panelIndex < parentObject.panels.length - 1) {
             // TD: component moves to new panel, but it doesn't open.
             parentObject.panels[panelIndex + 1].components.splice(
               0, 0, region.splice(currentComponentIndex, 1)[0]
             );
-            this.setState({
-              allComponents,
-            });
           } else {
-            const parentIndex = allComponents[this.state.grabbedComponentCurrRegion].components.findIndex((cmp) => (
+            const newRegion = allComponents[this.state.grabbedComponentCurrRegion].components;
+            const parentIndex = newRegion.findIndex((cmp) => (
               cmp.id === parentObject.id
-            ))
-
-            allComponents[this.state.grabbedComponentCurrRegion].components.splice(
-              parentIndex + 1, 0, region.splice(currentComponentIndex, 1)[0]
-            );
-
-            this.setState({
-              allComponents,
-            });
+            ));
+            newRegion.splice(parentIndex + 1, 0, region.splice(currentComponentIndex, 1)[0]);
           }
         }
+        this.setState({
+          allComponents,
+        });
       } else {
         region = allComponents[this.state.grabbedComponentCurrRegion].components;
         currentComponentIndex = region.findIndex((cmp) => (
@@ -326,7 +316,55 @@ class ConnectedApp extends Component {
         }
       }
     } else if (event.key === 'ArrowUp') {
+      if (event.target.hasAttribute('data-panelindex')) {
+        const panelIndex = parseInt(event.target.getAttribute('data-panelindex'));
+        const parentObject = getObjectbyKey(
+          allComponents[this.state.grabbedComponentCurrRegion].components,
+          'id',
+          event.target.closest('div.parent-component').getAttribute('id')
+        );
 
+        region = parentObject.panels[panelIndex].components;
+        currentComponentIndex = region.findIndex((cmp) => cmp.id === grabbedComponent.id);
+
+        if (currentComponentIndex < 0) {
+          newIndex = currentComponentIndex - 1;
+          region.splice(newIndex, 0, region.splice(currentComponentIndex, 1)[0]);
+        } else {
+          if (panelIndex < 0) {
+            // TD: component moves to new panel, but it doesn't open.
+            parentObject.panels[panelIndex - 1].components.splice(
+              0, 0, region.splice(currentComponentIndex, 1)[0]
+            );
+          } else {
+            const newRegion = allComponents[this.state.grabbedComponentCurrRegion].components;
+            const parentIndex = newRegion.findIndex((cmp) => (
+              cmp.id === parentObject.id
+            ));
+            newRegion.splice(parentIndex - 1, 0, region.splice(currentComponentIndex, 1)[0]);
+          }
+        }
+        this.setState({
+          allComponents,
+        });
+      } else {
+        region = allComponents[this.state.grabbedComponentCurrRegion].components;
+        currentComponentIndex = region.findIndex((cmp) => (
+          cmp.id === grabbedComponent.id
+        ));
+
+        if (currentComponentIndex < region.length - 1) {
+          newIndex = currentComponentIndex + 1;
+          if (region[newIndex].panels === undefined) {
+            region.splice(newIndex, 0, region.splice(currentComponentIndex, 1)[0]);
+          } else {
+            region[newIndex].panels[0].components.splice(0, 0, region.splice(currentComponentIndex, 1)[0]);
+          }
+          this.setState({
+            allComponents,
+          });
+        }
+      }
     }
   }
 
