@@ -15,7 +15,8 @@ class Tabs extends Component {
         {
           panel.components.length === 0 ?
             <AddCompButton
-              handleStartDrag={this.props.handleStartDrag}
+              // handleStartDrag={this.props.handleStartDrag}
+              handleNewComponent={this.props.handleNewComponent}
               id={this.props.id}
               label={`Add a Component: ${panel.name}`}
               panelIndex={panel.index}
@@ -29,6 +30,7 @@ class Tabs extends Component {
                     componentData={componentData}
                     region={this.props.region}
                     handleKeyDown={this.props.handleKeyDown}
+
                     handleStartDrag={this.props.handleStartDrag}
                     panelIndex={panel.index}
                     parentId={this.props.id}

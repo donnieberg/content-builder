@@ -2,18 +2,18 @@ export function cloneObject(obj) {
   return Object.assign({}, obj);
 }
 
-export function getAssistiveText(cmpType, region, index, numCmpsInRegion, action, parentType, panelIndex) {
+export function getAssistiveText(cmpType, region, index, numCmpsInRegion, action, parentType = null, panelName = null) {
   if (parentType) {
     return (`
       ${cmpType} ${action}, 
-      in ${parentType} panel ${panelIndex + 1}, ${region}.
+      in ${panelName} panel, ${region} region.
       Currently ${index + 1} of ${numCmpsInRegion}.
     `);
   }
 
   return (`
     ${cmpType} ${action}, 
-    in ${region}. 
+    in ${region} region. 
     Current position ${index + 1} of ${numCmpsInRegion}.
   `);
 }

@@ -22,6 +22,7 @@ class CanvasComponent extends Component {
         panels={this.props.componentData.panels}
         className="mbs"
         handleKeyDown={this.props.handleKeyDown}
+        handleNewComponent={this.props.handleNewComponent}
         handleStartDrag={this.props.handleStartDrag}
         id={`${this.props.componentData.id}`}
         region={this.props.region}
@@ -43,12 +44,9 @@ class CanvasComponent extends Component {
         id={this.props.componentData.id}
         key={`component-${this.props.componentData.id}`}
         tabIndex="0"
-        onKeyDown={(event) => {
-          console.log('componentKeyDown: so that ran twice, but does this?')
-          this.props.handleKeyDown(event, this.props.panelIndex)
-        }}
+        onKeyDown={this.props.handleKeyDown}
         data-type={this.props.componentData.value}
-        data-parentid={this.props.parentId}
+        data-panelindex={this.props.panelIndex}
       >
         <div className="pas pos-abs right-0 z-above">
           <Button

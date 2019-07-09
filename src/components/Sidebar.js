@@ -24,7 +24,7 @@ class Sidebar extends Component {
                     iconPosition="left"
                     label={component.label}
                     onClick={() => {
-                      this.props.handleStartDrag(component.id)
+                      this.props.handleNewComponent(component.id)
                     }}
                     variant="base"
                     id={component.id}

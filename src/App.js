@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import uniqid from 'uniqid';
-// import uniqBy from 'lodash.uniqby';
 
 import { connect } from 'react-redux';
-import {
-  updateRegion,
-} from './redux/actions';
 import { ALL_COMPONENTS } from './redux/constants';
+
+import { initComponents } from './initComponents';
 
 import {
   cloneObject,
   getAssistiveText,
-  getNewIndex,
+  // getNewIndex,
   getObjectbyKey,
 } from './helpers';
 
@@ -23,38 +21,24 @@ import Properties from './components/Properties';
 import './App.css';
 
 const mapStateToProps = state => {
-  return {
-    canvas: state.canvas,
-    canvasRegions: state.canvasRegions,
-    regions: state.regions
-  };
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    updateRegion: (region, regionData) => dispatch(updateRegion(region, regionData))
-  };
+  return { regions: state.regions };
 }
 
 class ConnectedApp extends Component {
   constructor(props) {
     super(props);
-    const initAllComponents = cloneObject(this.props.canvas);
 
     this.state = {
-      allComponents: initAllComponents,
+      allComponents: initComponents,
       assistiveText: '',
       currFocusedElement: null,
       currFocusedRegion: null,
       grabbedComponent: null,
-      grabbedComponentCurrRegion: 'header',
-      grabbedComponentIndex: 0,
-      grabbedComponentType: null,
+      grabbedComponentCurrRegion: null,
       isDragDropMode: false,
     }
 
-    this.addComponent = this.addComponent.bind(this);
-    this.handleStartDrag = this.handleStartDrag.bind(this);
+    this.handleNewComponent = this.handleNewComponent.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
 
     this.headerRef = React.createRef();
@@ -64,249 +48,246 @@ class ConnectedApp extends Component {
   }
 
   componentDidUpdate() {
-    console.log('APP.JS DIDUPDATE BABYYYY', this.props.canvas)
     if (this.state.currFocusedElement !== null) {
       document.getElementById(this.state.currFocusedElement).focus();
     }
   }
 
-  addComponent(region, componentType, componentIndex = 0, parentComponentId = null, panelIndex = -1) {
-    let componentToAdd;
+  handleNewComponent(type, region = 'header', parentId = null, panelIndex = null) {
+    // TD: should the new component init to grabbed?
 
-    if (this.state.grabbedComponent === null) {
-      const cmp = getObjectbyKey(ALL_COMPONENTS, 'id', componentType);
-      componentToAdd = cloneObject(cmp);
+    // newComponent: copy of the component from constants
+    let newComponent = cloneObject(getObjectbyKey(ALL_COMPONENTS, 'id', type));
+    let updatedComponents = cloneObject(this.state.allComponents);
+    let assistiveText = getAssistiveText(type, region, 0, 1, 'added');
+
+    newComponent.id = uniqid();
+
+    if (parentId === null || panelIndex === null) {
+      updatedComponents[region].components.splice(0, 0, newComponent);
     } else {
-      componentToAdd = cloneObject(this.state.grabbedComponent);
-    };
-
-    componentToAdd.id = uniqid();
-    componentToAdd.isGrabbed = false;
-
-    let regionDataCopy = cloneObject(this.props.canvas[region]);
-
-    if (panelIndex > -1) {
-      let parentComponentData = getObjectbyKey(regionDataCopy.components, 'id', parentComponentId);
-      componentToAdd.panelIndex = panelIndex;
-      parentComponentData.children.splice(panelIndex, 0, componentToAdd);
-    } else regionDataCopy.components.splice(componentIndex, 0, componentToAdd);
-
-    this.props.updateRegion(region, regionDataCopy);
-    this.setState({ currFocusedElement: componentToAdd.id });
-
-
-    return componentToAdd.id;
-  }
-
-  handleDrop(shouldFocusDroppedComp) {
-    let droppedComponentID; // this.addComponent will add object to redux and returns it's new ID
-    let prevGrabbedComponentIndex;
-    let updatedAllComponents = cloneObject(this.props.canvas); // copy of current local state
-    let updatingRegion = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
-    let updatedAssistiveText;
-
-    // Case 1: Drop on canvas
-    if (this.state.grabbedComponent.panelIndex === undefined) {
-      droppedComponentID = this.addComponent(
-        this.state.grabbedComponentCurrRegion,
-        this.state.grabbedComponentType,
-        this.state.grabbedComponentIndex,
-      );
-
-      // remove grabbed version of component from local state
-      prevGrabbedComponentIndex = updatingRegion.findIndex(el => el.isGrabbed === true);
-      updatingRegion.splice(prevGrabbedComponentIndex, 1);
-      updatedAssistiveText = getAssistiveText(
-        this.state.grabbedComponentType,
-        this.state.grabbedComponentCurrRegion,
-        this.state.grabbedComponentIndex,
-        updatingRegion.length,
-        'dropped',
-      );
-    }
-    // Case 2: Drop within another component
-    else {
-      droppedComponentID = this.addComponent(
-        this.state.grabbedComponentCurrRegion,
-        this.state.grabbedComponentType,
-        this.state.grabbedComponentIndex,
-        this.state.grabbedComponent.parentId,
-        this.state.grabbedComponent.panelIndex,
-      );
-
-      // remove grabbed version of component from local state
-      let parentObj = getObjectbyKey(
-        updatingRegion,
-        'id',
-        this.state.grabbedComponent.parentId,
-      );
-
-      prevGrabbedComponentIndex = parentObj.children.findIndex(el => el.isGrabbed === true);
-      parentObj.children.splice(prevGrabbedComponentIndex, 1);
-
-      updatedAssistiveText = getAssistiveText(
-        this.state.grabbedComponentType,
-        this.state.grabbedComponentCurrRegion,
-        this.state.grabbedComponentIndex,
-        parentObj.children.length,
-        'dropped',
-        parentObj.value,
-        this.state.grabbedComponent.panelIndex,
-      );
+      let parentComponent = getObjectbyKey(updatedComponents[region].components, 'id', parentId);
+      parentComponent.panels[panelIndex].components.splice(0, 0, newComponent);
     }
 
-    this.setState((prevState) => {
-      return {
-        allComponents: updatedAllComponents,
-        assistiveText: updatedAssistiveText,
-        currFocusedElement: shouldFocusDroppedComp ? droppedComponentID : prevState.currFocusedElement,
-        grabbedComponent: null,
-        isDragDropMode: false,
-      }
+    this.setState({
+      allComponents: updatedComponents,
+      assistiveText,
+      currFocusedElement: newComponent.id,
     });
   }
 
-  handleStartDrag(componentType, event = null, panelIndex = null, initRegion = null, parentId = null) {
-    let componentToAdd;
-    let localStateIndex = 0; // default new component index
-    let region = initRegion === null ? 'header' : initRegion; // default new component location
-    let updatedAllComponents = cloneObject(this.props.canvas); // copy of current local state
-    let parentObj;
+  handleKeyDown(event) {
+    if (event.key === ' ') {
+      event.preventDefault();
+      event.stopPropagation();
 
-    // Drop currently grabbed component (can only have 1 grabbed at a time)
-    if (this.state.grabbedComponent !== null) this.handleDrop();
+      if (this.state.grabbedComponent === null) this.handleGrab(event);
+      else if (event.target.id === this.state.grabbedComponent.id) this.handleDrop(event);
+    } else if (this.state.isDragDropMode && event.target.id === this.state.grabbedComponent.id) {
+      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        event.preventDefault();
+        event.stopPropagation();
+        this.handleMoveRegion(event);
+      } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        event.stopPropagation();
+        this.handleMoveIndex(event);
+      }
+    }
+  }
 
-    // 5 Cases: 
-    //   * add new component from the sidebar
-    //   * add new component from button on canvas
-    //   * add new component from button within another component
-    //   * move component already on canvas 
-    //   * move component within another component
+  handleGrab(event) {
+    if (this.state.grabbedComponent !== null) this.handleDrop(event);
 
-    // Cases 1 & 2: Add component from sidebar/button on canvas 
-    if (event === null && parentId === null) {
-      // componentToAdd = a copy of base data for new component from constants
-      const cmp = getObjectbyKey(ALL_COMPONENTS, 'id', componentType);
-      componentToAdd = cloneObject(cmp);
+    const componentHTML = event.target;
+    const region = event.target.closest('section').id.substring(8);
+    let assistiveText;
+    let grabbedComponent;
 
-      // add the component into local state copy
-      updatedAllComponents[region].components.splice(localStateIndex, 0, componentToAdd);
+    if (componentHTML.hasAttribute('data-panelindex')) {
+      const panelIndex = componentHTML.getAttribute('data-panelindex');
+      const parentHTML = event.target.closest('div.parent-component');
+      const parentId = parentHTML.getAttribute('id');
+      let parentObject = getObjectbyKey(this.state.allComponents[region].components, 'id', parentId);
+      grabbedComponent = getObjectbyKey(parentObject.panels[panelIndex].components, 'id', componentHTML.id);
+
+      assistiveText = getAssistiveText(
+        componentHTML.getAttribute('data-type'),
+        region,
+        parentObject.panels[panelIndex].components.findIndex((cmp) => cmp.id === componentHTML.id),
+        parentObject.panels[panelIndex].components.length,
+        'grabbed',
+        parentHTML.getAttribute('data-type'),
+        parentObject.panels[panelIndex].name,
+      )
+    } else {
+      grabbedComponent = getObjectbyKey(this.state.allComponents[region].components, 'id', componentHTML.id);
+
+      assistiveText = getAssistiveText(
+        componentHTML.getAttribute('data-type'),
+        region,
+        this.state.allComponents[region].components.findIndex((cmp) => cmp.id === componentHTML.id),
+        this.state.allComponents[region].components.length,
+        'grabbed',
+      )
     }
 
-    // Case 3: Add component from button within another component
-    else if (event === null && panelIndex !== null && parentId !== null) {
-      // componentToAdd = a copy of base data for new component from constants
-      const cmp = getObjectbyKey(ALL_COMPONENTS, 'id', componentType);
-      componentToAdd = cloneObject(cmp);
-      componentToAdd.panelIndex = panelIndex;
-      componentToAdd.parentId = parentId;
+    grabbedComponent.id = `floating-${grabbedComponent.value}`;
+    grabbedComponent.isGrabbed = true;
 
-      // add the component into local state copy
-      let parentCmp = getObjectbyKey(
-        updatedAllComponents[region].components,
+    this.setState({
+      assistiveText,
+      currFocusedElement: grabbedComponent.id,
+      grabbedComponent,
+      grabbedComponentCurrRegion: region,
+      isDragDropMode: true,
+    });
+  }
+
+  handleDrop(event) {
+    let allComponents = cloneObject(this.state.allComponents);
+    let grabbedComponent = this.state.grabbedComponent;
+    let assistiveText;
+    let regionComponents;
+
+    if (event.target.hasAttribute('data-panelindex')) {
+      const panelIndex = event.target.getAttribute('data-panelindex');
+      const parentId = event.target.closest('div.parent-component').getAttribute('id');
+      const parentObject = getObjectbyKey(
+        allComponents[this.state.grabbedComponentCurrRegion].components,
         'id',
         parentId
       );
-      parentCmp.children.push(componentToAdd);
-    }
 
-    // Case 4: Move component already on canvas
-    else if (event !== null && panelIndex === null) {
-      const componentHTML = event.target.closest('div.component');
-      region = event.target.closest('section').id.substring(8);
+      regionComponents = parentObject.panels[panelIndex].components;
 
-      // componentToAdd = a copy of the existing component from local state
-      componentToAdd = cloneObject(
-        getObjectbyKey(updatedAllComponents[region].components, 'id', componentHTML.id)
-      );
-
-      // remove componentToAdd from redux since it isn't in it's 'saved' location anymore
-      localStateIndex = updatedAllComponents[region].components.findIndex(cmp => cmp.id === componentHTML.id);
-      updatedAllComponents[region].components.splice(localStateIndex, 1);
-      this.props.updateRegion(region, updatedAllComponents[region]);
-
-      // add the component back into local state copy *only* [I DON'T LIKE THIS, WILL CHANGE LATER IF HAVE TIME]
-      updatedAllComponents[region].components.splice(localStateIndex, 0, componentToAdd);
-    }
-
-    // Case 5: Move component within another component
-    else if (event !== null && panelIndex !== null) {
-      const componentHTML = event.target.closest('div.component');
-      const parentId = event.target.getAttribute('data-parentid');
-      region = event.target.closest('section').id.substring(8);
-
-      // parentObj = the object in local state that the component is currently in
-      parentObj = getObjectbyKey(updatedAllComponents[region].components, 'id', parentId);
-
-      // componentToAdd = a copy of the existing component within the parent from local state
-      componentToAdd = cloneObject(getObjectbyKey(parentObj.children, 'id', componentHTML.id));
-      componentToAdd.parentId = parentId;
-
-      // remove componentToAdd from redux since it isn't in it's 'saved' location anymore
-      localStateIndex = parentObj.children.findIndex(cmp => cmp.id === componentHTML.id);
-      parentObj.children.splice(localStateIndex, 1);
-      this.props.updateRegion(region, updatedAllComponents[region]);
-
-      // add the component back into local state copy *only* [I DON'T LIKE THIS, WILL CHANGE LATER IF HAVE TIME]
-      parentObj.children.splice(localStateIndex, 0, componentToAdd);
-    }
-
-    componentToAdd.id = `floating-${componentType}`;
-    componentToAdd.isGrabbed = true;
-
-    let updatedAssistiveText;
-
-    if (parentObj !== undefined) {
-      updatedAssistiveText = getAssistiveText(
-        componentType,
-        region,
-        localStateIndex,
-        parentObj.children.length,
-        'grabbed',
-        parentObj.value,
-        panelIndex,
+      assistiveText = getAssistiveText(
+        grabbedComponent.value,
+        this.state.grabbedComponentCurrRegion,
+        regionComponents.findIndex((cmp) => cmp.id === grabbedComponent.id),
+        regionComponents.length,
+        'dropped',
+        parentObject.value,
+        parentObject.panels[panelIndex].name,
       );
     } else {
-      updatedAssistiveText = getAssistiveText(
-        componentType,
-        region,
-        localStateIndex,
-        updatedAllComponents[region].components.length,
-        'grabbed',
+      regionComponents = allComponents[this.state.grabbedComponentCurrRegion].components;
+      assistiveText = getAssistiveText(
+        grabbedComponent.value,
+        this.state.grabbedComponentCurrRegion,
+        regionComponents.findIndex((cmp) => cmp.id === grabbedComponent.id),
+        regionComponents.length,
+        'dropped'
       );
     }
 
-    console.log('componentToAdd handleStartDrag', updatedAllComponents)
+    let cmpInAllComponents = getObjectbyKey(regionComponents, 'id', grabbedComponent.id);
+
+    cmpInAllComponents.isGrabbed = false;
+    cmpInAllComponents.id = uniqid();
 
     this.setState({
-      allComponents: updatedAllComponents,
-      assistiveText: updatedAssistiveText,
-      currFocusedElement: componentToAdd.id,
-      isDragDropMode: true,
-      grabbedComponent: componentToAdd,
-      grabbedComponentIndex: localStateIndex,
-      grabbedComponentType: componentType,
-      grabbedComponentCurrRegion: region,
+      allComponents,
+      assistiveText,
+      currFocusedElement: cmpInAllComponents.id,
+      grabbedComponent: null,
+      grabbedComponentCurrRegion: null,
+      isDragDropMode: false,
     });
   }
 
-  handleKeyDown(event, panelIndex = null) {
-    if (event.key === ' ') {
-      event.preventDefault();
-      if (this.state.grabbedComponent !== null) this.handleDrop(true);
-      else this.handleStartDrag(event.target.getAttribute('data-type'), event, panelIndex);
-      event.stopPropagation();
+  handleMoveRegion(event) {
+    let allComponents = cloneObject(this.state.allComponents);
+    let grabbedComponent = cloneObject(this.state.grabbedComponent);
+    const regions = Object.keys(allComponents);
+    const currentRegionIndex = regions.findIndex((region) => region === this.state.grabbedComponentCurrRegion);
+    let componentIndex;
+    let assistiveText;
+    let newRegion;
+    let shouldRemoveOld = false;
+
+    // add the component to the new region
+    if (event.key === 'ArrowRight' && currentRegionIndex < regions.length - 1) {
+      newRegion = regions[currentRegionIndex + 1];
+      allComponents[newRegion].components.splice(0, 0, grabbedComponent);
+      shouldRemoveOld = true;
+    } else if (event.key === 'ArrowLeft' && currentRegionIndex > 0) {
+      newRegion = regions[currentRegionIndex - 1]
+      allComponents[newRegion].components.splice(0, 0, grabbedComponent);
+      shouldRemoveOld = true;
     }
 
-    console.log('handleKeyDown: all components', this.state.allComponents)
+    if (shouldRemoveOld) {
+      if (event.target.hasAttribute('data-panelindex')) {
+        const panelIndex = event.target.getAttribute('data-panelindex');
+        const parentId = event.target.closest('div.parent-component').getAttribute('id');
+        const parentObject = getObjectbyKey(
+          this.state.allComponents[regions[currentRegionIndex]].components,
+          'id',
+          parentId
+        );
 
-    if (this.state.isDragDropMode) {
-      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-        console.log('handleKeyDown: does this run twice?')
-        this.handleRightLeft(event);
-      } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-        this.handleUpDown(event);
+        componentIndex = parentObject.panels[panelIndex].components.findIndex((cmp) => cmp.id === grabbedComponent.id);
+        parentObject.panels[panelIndex].components.splice(componentIndex, 1);
+      } else {
+        componentIndex = allComponents[regions[currentRegionIndex]].components.findIndex((cmp) => cmp.id === grabbedComponent.id);
+        allComponents[regions[currentRegionIndex]].components.splice(componentIndex, 1);
       }
+
+      assistiveText = getAssistiveText(
+        grabbedComponent.value,
+        newRegion,
+        0,
+        allComponents[newRegion].components.length,
+        'moved'
+      );
+
+      this.setState({
+        allComponents,
+        assistiveText,
+        grabbedComponentCurrRegion: newRegion,
+      });
+    }
+  }
+
+  handleMoveIndex(event) {
+    let allComponents = cloneObject(this.state.allComponents);
+    let grabbedComponent = cloneObject(this.state.grabbedComponent);
+    let currentComponentIndex;
+    let region;
+    let newIndex;
+    // let assistiveText;
+    // cases
+    //  * normal move within region
+    //  * move into panel
+    //  * move within panel
+    //  * move to next panel
+    //  * move out of panel
+
+    if (event.key === 'ArrowDown') {
+      if (event.target.hasAttribute('data-panelindex')) {
+        console.log(grabbedComponent);
+      } else {
+        region = allComponents[this.state.grabbedComponentCurrRegion].components;
+        currentComponentIndex = region.findIndex((cmp) => (
+          cmp.id === grabbedComponent.id
+        ));
+
+        newIndex = currentComponentIndex++;
+
+        if (currentComponentIndex < region.length - 1) {
+          if (region[newIndex].panels === null) {
+            console.log('hi')
+          } else {
+            console.log(grabbedComponent);
+          }
+        }
+
+        console.log('currentComponentIndex', currentComponentIndex)
+      }
+    } else if (event.key === 'ArrowUp') {
+
     }
   }
 
@@ -339,112 +320,65 @@ class ConnectedApp extends Component {
     }
   }
 
-  handleUpDown(event) {
-    event.preventDefault();
-    console.log(this.state.grabbedComponent.panelIndex);
-    let updatedAllComponents = cloneObject(this.props.canvas);
-    let updatedRegion = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
-    let oldIndex;
-    let newIndex;
-    let updatedAssistiveText;
+  // handleRightLeft(event) {
+  //   console.log('handleRightLeft: event target', event.target)
+  //   // console.log('handleRightLeft: event target parent', event.target.parentNode)
+  //   console.log('handleRightLeft: all components local state', this.state.allComponents)
+  //   event.preventDefault();
+  //   let updatedAllComponents = cloneObject(this.state.allComponents);
+  //   console.log('handleRightLeft: updatedAllComponents init', updatedAllComponents)
+  //   const oldRegionName = `builder-${this.state.grabbedComponentCurrRegion}`;
+  //   let newRegionIndex = getNewIndex(
+  //     this.props.canvasRegions,
+  //     this.props.canvasRegions.findIndex(reg => reg === oldRegionName),
+  //     event.key === 'ArrowRight' ? 'add' : 'sub'
+  //   );
 
+  //   // take the 'builder-' part out of the name
+  //   const newRegionName = this.props.canvasRegions[newRegionIndex].substring(8);
+  //   let updatedOldRegionData = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
+  //   let updatedNewRegionData = updatedAllComponents[newRegionName].components;
+  //   console.log('handleRightLeft: updatedNewRegionData', updatedNewRegionData)
 
-    if (this.state.grabbedComponent.panelIndex === undefined) {
-      oldIndex = this.state.grabbedComponentIndex;
-      newIndex = getNewIndex(updatedRegion, oldIndex, event.key === 'ArrowDown' ? 'add' : 'sub');
+  //   // take grabbed out of old region
+  //   if (this.state.grabbedComponent.panelIndex === undefined) {
+  //     updatedOldRegionData.splice(this.state.grabbedComponentIndex, 1);
+  //   } else {
+  //     let parentComp = getObjectbyKey(
+  //       updatedOldRegionData,
+  //       'id',
+  //       this.state.grabbedComponent.parentId
+  //     );
+  //     let index = parentComp.children.findIndex(el => el.id === this.state.grabbedComponent.id);
+  //     parentComp.children.splice(index, 1);
 
-      updatedRegion.splice(newIndex, 0, updatedRegion.splice(oldIndex, 1)[0]);
-      updatedAllComponents[this.state.grabbedComponentCurrRegion].component = updatedRegion;
+  //     // removes panelindex/parent data from grabbedComponent
+  //     let tmp = cloneObject(this.state.grabbedComponent);
+  //     tmp.panelIndex = undefined;
+  //     tmp.parentId = undefined;
+  //     this.setState({ grabbedComponent: tmp });
+  //   }
 
-      updatedAssistiveText = getAssistiveText(
-        this.state.grabbedComponentType,
-        this.state.grabbedComponentCurrRegion,
-        newIndex,
-        updatedRegion.length,
-        'moved'
-      );
-    } else {
-      console.log(this.state.grabbedComponent)
-      let parentObj = getObjectbyKey(updatedRegion, 'id', this.state.grabbedComponent.parentId);
-      // console.log(parentObj.children)
+  //   // updatedAllComponents[newRegionName].components = uniqBy(updatedAllComponents[newRegionName].components, 'id');
+  //   console.log('handleRightLeft: updatedAllComponents end', updatedAllComponents)
+  //   // add grabbed to top of new region
+  //   updatedNewRegionData.splice(0, 0, this.state.grabbedComponent);
 
-      let panelCmps = parentObj.children.filter(component => component.panelIndex === this.state.grabbedComponent.panelIndex);
+  //   let updatedAssistiveText = getAssistiveText(
+  //     this.state.grabbedComponentType,
+  //     newRegionName,
+  //     0,
+  //     updatedNewRegionData.length,
+  //     'grabbed'
+  //   );
 
-      let nextObj = panelCmps[(panelCmps.findIndex(cmp => cmp.id === this.state.grabbedComponent.id)) + 1];
-      console.log('nextObj', nextObj)
-
-
-      // oldIndex = parentObj.children.findIndex(cmp => cmp.id)
-      // oldIndex = this.props.children.filter(component => component.panelIndex === this.state.grabbedComponent.panelIndex);
-      // console.log(oldIndex)
-    }
-
-    // this.setState({
-    //   allComponents: updatedAllComponents,
-    //   assistiveText: updatedAssistiveText,
-    //   grabbedComponentIndex: newIndex,
-    // });
-  }
-
-  handleRightLeft(event) {
-    console.log('handleRightLeft: event target', event.target)
-    // console.log('handleRightLeft: event target parent', event.target.parentNode)
-    console.log('handleRightLeft: all components local state', this.state.allComponents)
-    event.preventDefault();
-    let updatedAllComponents = cloneObject(this.state.allComponents);
-    console.log('handleRightLeft: updatedAllComponents init', updatedAllComponents)
-    const oldRegionName = `builder-${this.state.grabbedComponentCurrRegion}`;
-    let newRegionIndex = getNewIndex(
-      this.props.canvasRegions,
-      this.props.canvasRegions.findIndex(reg => reg === oldRegionName),
-      event.key === 'ArrowRight' ? 'add' : 'sub'
-    );
-
-    // take the 'builder-' part out of the name
-    const newRegionName = this.props.canvasRegions[newRegionIndex].substring(8);
-    let updatedOldRegionData = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
-    let updatedNewRegionData = updatedAllComponents[newRegionName].components;
-    console.log('handleRightLeft: updatedNewRegionData', updatedNewRegionData)
-
-    // take grabbed out of old region
-    if (this.state.grabbedComponent.panelIndex === undefined) {
-      updatedOldRegionData.splice(this.state.grabbedComponentIndex, 1);
-    } else {
-      let parentComp = getObjectbyKey(
-        updatedOldRegionData,
-        'id',
-        this.state.grabbedComponent.parentId
-      );
-      let index = parentComp.children.findIndex(el => el.id === this.state.grabbedComponent.id);
-      parentComp.children.splice(index, 1);
-
-      // removes panelindex/parent data from grabbedComponent
-      let tmp = cloneObject(this.state.grabbedComponent);
-      tmp.panelIndex = undefined;
-      tmp.parentId = undefined;
-      this.setState({ grabbedComponent: tmp });
-    }
-
-    // updatedAllComponents[newRegionName].components = uniqBy(updatedAllComponents[newRegionName].components, 'id');
-    console.log('handleRightLeft: updatedAllComponents end', updatedAllComponents)
-    // add grabbed to top of new region
-    updatedNewRegionData.splice(0, 0, this.state.grabbedComponent);
-
-    let updatedAssistiveText = getAssistiveText(
-      this.state.grabbedComponentType,
-      newRegionName,
-      0,
-      updatedNewRegionData.length,
-      'grabbed'
-    );
-
-    this.setState({
-      allComponents: updatedAllComponents,
-      assistiveText: updatedAssistiveText,
-      grabbedComponentIndex: 0,
-      grabbedComponentCurrRegion: newRegionName,
-    });
-  }
+  //   this.setState({
+  //     allComponents: updatedAllComponents,
+  //     assistiveText: updatedAssistiveText,
+  //     grabbedComponentIndex: 0,
+  //     grabbedComponentCurrRegion: newRegionName,
+  //   });
+  // }
 
   render() {
     return (
@@ -454,14 +388,15 @@ class ConnectedApp extends Component {
         </div>
         <Header headerRef={this.headerRef} />
         <main className="dg main-grid dg-stretch">
-          <Sidebar handleStartDrag={this.handleStartDrag} sidebarRef={this.sidebarRef} />
+          <Sidebar handleNewComponent={this.handleNewComponent} sidebarRef={this.sidebarRef} />
           <Canvas
             data={this.state.allComponents}
             // addComponent={this.addComponent}
             isDragDropMode={this.state.isDragDropMode}
             handleKeyDown={this.handleKeyDown}
-            canvasRegions={this.props.canvasRegions}
-            handleStartDrag={this.handleStartDrag}
+            handleNewComponent={this.handleNewComponent}
+            // canvasRegions={this.props.canvasRegions}
+            // handleStartDrag={this.handleStartDrag}
             canvasRef={this.canvasRef}
           />
           <div id="properties-sidebar" className="pam bg-white bas border-gray" ref={this.propertiesRef} tabIndex="-1">
@@ -474,5 +409,5 @@ class ConnectedApp extends Component {
 }
 
 // connects react component to the redux store
-const App = connect(mapStateToProps, mapDispatchToProps)(ConnectedApp);
+const App = connect(mapStateToProps, null)(ConnectedApp);
 export default App;

@@ -7,13 +7,11 @@ import CanvasComponent from './CanvasComponent';
 class Accordion extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      expandedPanels: {},
-    };
+    this.state = { expandedPanels: {} };
     this.togglePanel = this.togglePanel.bind(this)
   }
 
-  togglePanel(event, id) {
+  togglePanel(id) {
     this.setState((state) => ({
       ...state,
       expandedPanels: {
@@ -30,13 +28,13 @@ class Accordion extends Component {
         id={`${this.props.id}-${panel.index}`}
         key={`${this.props.id}-${panel.index}`}
         label={panel.name}
-        onTogglePanel={(event) => this.togglePanel(event, `${this.props.id}-${panel.index}`)}
+        onTogglePanel={(event) => this.togglePanel(`${this.props.id}-${panel.index}`)}
         summary={panel.name}
       >
         {
           panel.components.length === 0 ?
             <AddCompButton
-              handleStartDrag={this.props.handleStartDrag}
+              handleNewComponent={this.props.handleNewComponent}
               id={this.props.id}
               label={`Add a Component: ${panel.name}`}
               panelIndex={panel.index}

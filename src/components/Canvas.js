@@ -12,7 +12,8 @@ class Canvas extends Component {
           id={this.props.id}
           label={`Add a Component: ${region} Region`}
           region={region}
-          handleStartDrag={this.props.handleStartDrag}
+          handleNewComponent={this.props.handleNewComponent}
+        // handleStartDrag={this.props.handleStartDrag}
         />
       );
     } else {
@@ -24,6 +25,7 @@ class Canvas extends Component {
               componentData={componentData}
               region={region}
               handleKeyDown={this.props.handleKeyDown}
+              handleNewComponent={this.props.handleNewComponent}
               handleStartDrag={this.props.handleStartDrag}
             />
           }
@@ -45,7 +47,7 @@ class Canvas extends Component {
           Object.keys(this.props.data).map((region, i) => {
             return (
               <section
-                id={this.props.canvasRegions[i]}
+                id={`builder-${region}`}
                 className="builder-region slds-text-align_center"
                 aria-labelledby={`builder-${region}-header`}
                 key={i}
