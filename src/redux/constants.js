@@ -65,5 +65,25 @@ export const ALL_COMPONENTS = [
       category: 'utility',
       name: 'layers'
     }
+  }, {
+    id: 'form',
+    component: 'form',
+    label: 'Form',
+    imageSrc: 'stencil_inputs.png',
+    value: 'form',
+    rightIcon: {
+      category: 'utility',
+      name: 'record_update'
+    }
+  }, {
+    id: 'fields',
+    component: 'fields',
+    label: 'Form Fields',
+    imageSrc: 'stencil_formFields.png',
+    value: 'fields',
+    rightIcon: {
+      category: 'utility',
+      name: 'rows'
+    }
   }
 ];
