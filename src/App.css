@@ -8,7 +8,7 @@
 #builder-main { grid-area: builder-main; }
 #builder-sidebar { grid-area: builder-sidebar; }
 
-.app-grid { grid-template-rows: auto 1fr;  }
+.app-grid { grid-template-rows: auto auto 1fr;  }
 .main-grid { grid-template-columns: 20% auto 25%; }
 
 .builder-grid {

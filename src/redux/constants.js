@@ -5,16 +5,11 @@ export const HEADER = 'HEADER';
 export const COMPONENT_PANEL = 'COMPONENT_PANEL';
 export const CANVAS = 'CANVAS';
 export const PROPERTY_PANEL = 'PROPERTY_PANEL';
-export const CANVAS_HEADER = 'builder-header';
-export const CANVAS_MAIN = 'builder-main';
-export const CANVAS_SIDEBAR = 'builder-sidebar';
-
-export const ALL_LABELS = ['Label 1', 'Label 2', 'Label 3'];
 
 export const ALL_COMPONENTS = [
   {
     id: 'chatter',
-    imageSrc: 'stencil_chatter.png', 
+    imageSrc: 'stencil_chatter.png',
     component: 'chatter',
     label: 'Chatter',
     value: 'chatter',
@@ -25,7 +20,21 @@ export const ALL_COMPONENTS = [
   }, {
     id: 'tabs',
     component: Tabs,
-    children: [],
+    panels: [
+      {
+        index: 0,
+        name: 'Label 1',
+        components: []
+      }, {
+        index: 1,
+        name: 'Label 2',
+        components: []
+      }, {
+        index: 2,
+        name: 'Label 3',
+        components: []
+      },
+    ],
     label: 'Tabs',
     value: 'tabs',
     rightIcon: {
@@ -35,12 +44,46 @@ export const ALL_COMPONENTS = [
   }, {
     id: 'accordion',
     component: Accordion,
-    children: [],
+    panels: [
+      {
+        index: 0,
+        name: 'Label 1',
+        components: [],
+      }, {
+        index: 1,
+        name: 'Label 2',
+        components: [],
+      }, {
+        index: 2,
+        name: 'Label 3',
+        components: [],
+      },
+    ],
     label: 'Accordion',
     value: 'accordion',
     rightIcon: {
       category: 'utility',
       name: 'layers'
+    }
+  }, {
+    id: 'form',
+    component: 'form',
+    label: 'Form',
+    imageSrc: 'stencil_inputs.png',
+    value: 'form',
+    rightIcon: {
+      category: 'utility',
+      name: 'record_update'
+    }
+  }, {
+    id: 'fields',
+    component: 'fields',
+    label: 'Form Fields',
+    imageSrc: 'stencil_formFields.png',
+    value: 'fields',
+    rightIcon: {
+      category: 'utility',
+      name: 'rows'
     }
   }
 ];

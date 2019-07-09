@@ -1,42 +1,33 @@
 import React, { Component } from 'react';
-import {
-  Button,
-  Dropdown,
-  DropdownTrigger,
-} from '@salesforce/design-system-react';
 
-import { renderComponent } from '../helpers';
-
-import { ALL_COMPONENTS } from '../redux/constants';
+// import { renderComponent } from '../helpers';
+import CanvasComponent from './CanvasComponent';
+import AddCompButton from './AddCompButton';
 
 class Canvas extends Component {
   renderComponents(region, components) {
     if (components.length === 0) {
       return (
-        <Dropdown
-          align="left"
-          className="wi-full"
-          options={ALL_COMPONENTS}
-          onSelect={(e) => {
-            this.props.addComponent(region, e.value);
-          }}
-        >
-          <DropdownTrigger>
-            <Button label={`Add a Component: ${region} Region`} />
-          </DropdownTrigger>
-        </Dropdown>
+        <AddCompButton
+          id={this.props.id}
+          label={`Add a Component: ${region} Region`}
+          region={region}
+          handleNewComponent={this.props.handleNewComponent}
+        // handleStartDrag={this.props.handleStartDrag}
+        />
       );
     } else {
       return (
-        components.map((componentData) => {
+        components.map((componentData, i) => {
           if (componentData !== undefined || componentData !== null) {
-            return renderComponent(
-              componentData,
-              region,
-              this.props.handleKeyDown,
-              this.props.handleStartDrag,
-              this.props.addComponent
-            )
+            return <CanvasComponent
+              key={`ccomp-${componentData.id}`}
+              componentData={componentData}
+              region={region}
+              handleKeyDown={this.props.handleKeyDown}
+              handleNewComponent={this.props.handleNewComponent}
+              handleStartDrag={this.props.handleStartDrag}
+            />
           }
           return null;
         })
@@ -46,8 +37,8 @@ class Canvas extends Component {
 
   render() {
     return (
-      <div 
-        id="main-builder" 
+      <div
+        id="main-builder"
         className="maxs mbn pam pbn bg-blue dg builder-grid dg-stretch"
         ref={this.props.canvasRef}
         tabIndex="-1"
@@ -56,7 +47,7 @@ class Canvas extends Component {
           Object.keys(this.props.data).map((region, i) => {
             return (
               <section
-                id={this.props.canvasRegions[i]}
+                id={`builder-${region}`}
                 className="builder-region slds-text-align_center"
                 aria-labelledby={`builder-${region}-header`}
                 key={i}

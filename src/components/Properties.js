@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Icon } from '@salesforce/design-system-react';
 
 class Properties extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div>
