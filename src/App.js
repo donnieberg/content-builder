@@ -267,24 +267,63 @@ class ConnectedApp extends Component {
 
     if (event.key === 'ArrowDown') {
       if (event.target.hasAttribute('data-panelindex')) {
-        console.log(grabbedComponent);
+        const panelIndex = parseInt(event.target.getAttribute('data-panelindex'));
+        const parentObject = getObjectbyKey(
+          allComponents[this.state.grabbedComponentCurrRegion].components,
+          'id',
+          event.target.closest('div.parent-component').getAttribute('id')
+        );
+
+        region = parentObject.panels[panelIndex].components;
+        currentComponentIndex = region.findIndex((cmp) => cmp.id === grabbedComponent.id);
+
+        if (currentComponentIndex < region.length - 1) {
+          newIndex = currentComponentIndex + 1;
+          region.splice(newIndex, 0, region.splice(currentComponentIndex, 1)[0]);
+
+          this.setState({
+            allComponents,
+          });
+        } else {
+          if (panelIndex < parentObject.panels.length - 1) {
+            // TD: component moves to new panel, but it doesn't open.
+            parentObject.panels[panelIndex + 1].components.splice(
+              0, 0, region.splice(currentComponentIndex, 1)[0]
+            );
+            this.setState({
+              allComponents,
+            });
+          } else {
+            const parentIndex = allComponents[this.state.grabbedComponentCurrRegion].components.findIndex((cmp) => (
+              cmp.id === parentObject.id
+            ))
+
+            allComponents[this.state.grabbedComponentCurrRegion].components.splice(
+              parentIndex + 1, 0, region.splice(currentComponentIndex, 1)[0]
+            );
+
+            this.setState({
+              allComponents,
+            });
+          }
+        }
       } else {
         region = allComponents[this.state.grabbedComponentCurrRegion].components;
         currentComponentIndex = region.findIndex((cmp) => (
           cmp.id === grabbedComponent.id
         ));
 
-        newIndex = currentComponentIndex++;
-
         if (currentComponentIndex < region.length - 1) {
-          if (region[newIndex].panels === null) {
-            console.log('hi')
+          newIndex = currentComponentIndex + 1;
+          if (region[newIndex].panels === undefined) {
+            region.splice(newIndex, 0, region.splice(currentComponentIndex, 1)[0]);
           } else {
-            console.log(grabbedComponent);
+            region[newIndex].panels[0].components.splice(0, 0, region.splice(currentComponentIndex, 1)[0]);
           }
+          this.setState({
+            allComponents,
+          });
         }
-
-        console.log('currentComponentIndex', currentComponentIndex)
       }
     } else if (event.key === 'ArrowUp') {
 
@@ -319,66 +358,6 @@ class ConnectedApp extends Component {
       }
     }
   }
-
-  // handleRightLeft(event) {
-  //   console.log('handleRightLeft: event target', event.target)
-  //   // console.log('handleRightLeft: event target parent', event.target.parentNode)
-  //   console.log('handleRightLeft: all components local state', this.state.allComponents)
-  //   event.preventDefault();
-  //   let updatedAllComponents = cloneObject(this.state.allComponents);
-  //   console.log('handleRightLeft: updatedAllComponents init', updatedAllComponents)
-  //   const oldRegionName = `builder-${this.state.grabbedComponentCurrRegion}`;
-  //   let newRegionIndex = getNewIndex(
-  //     this.props.canvasRegions,
-  //     this.props.canvasRegions.findIndex(reg => reg === oldRegionName),
-  //     event.key === 'ArrowRight' ? 'add' : 'sub'
-  //   );
-
-  //   // take the 'builder-' part out of the name
-  //   const newRegionName = this.props.canvasRegions[newRegionIndex].substring(8);
-  //   let updatedOldRegionData = updatedAllComponents[this.state.grabbedComponentCurrRegion].components;
-  //   let updatedNewRegionData = updatedAllComponents[newRegionName].components;
-  //   console.log('handleRightLeft: updatedNewRegionData', updatedNewRegionData)
-
-  //   // take grabbed out of old region
-  //   if (this.state.grabbedComponent.panelIndex === undefined) {
-  //     updatedOldRegionData.splice(this.state.grabbedComponentIndex, 1);
-  //   } else {
-  //     let parentComp = getObjectbyKey(
-  //       updatedOldRegionData,
-  //       'id',
-  //       this.state.grabbedComponent.parentId
-  //     );
-  //     let index = parentComp.children.findIndex(el => el.id === this.state.grabbedComponent.id);
-  //     parentComp.children.splice(index, 1);
-
-  //     // removes panelindex/parent data from grabbedComponent
-  //     let tmp = cloneObject(this.state.grabbedComponent);
-  //     tmp.panelIndex = undefined;
-  //     tmp.parentId = undefined;
-  //     this.setState({ grabbedComponent: tmp });
-  //   }
-
-  //   // updatedAllComponents[newRegionName].components = uniqBy(updatedAllComponents[newRegionName].components, 'id');
-  //   console.log('handleRightLeft: updatedAllComponents end', updatedAllComponents)
-  //   // add grabbed to top of new region
-  //   updatedNewRegionData.splice(0, 0, this.state.grabbedComponent);
-
-  //   let updatedAssistiveText = getAssistiveText(
-  //     this.state.grabbedComponentType,
-  //     newRegionName,
-  //     0,
-  //     updatedNewRegionData.length,
-  //     'grabbed'
-  //   );
-
-  //   this.setState({
-  //     allComponents: updatedAllComponents,
-  //     assistiveText: updatedAssistiveText,
-  //     grabbedComponentIndex: 0,
-  //     grabbedComponentCurrRegion: newRegionName,
-  //   });
-  // }
 
   render() {
     return (
